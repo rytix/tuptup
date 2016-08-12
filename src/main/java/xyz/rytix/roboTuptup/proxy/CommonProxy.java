@@ -1,7 +1,21 @@
 package xyz.rytix.roboTuptup.proxy;
 
+import xyz.rytix.roboTuptup.init.robo.Robo;
+import xyz.rytix.roboTuptup.item.ItemBaseRobo;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+
 public class CommonProxy {
-	public void registerRenders(){
+	public void preInit(FMLPreInitializationEvent event){
+		
+	}
+	
+	public void init(FMLInitializationEvent event){
+		
+	}
+	
+	public void postInit(FMLPostInitializationEvent event){
 		
 	}
 }
