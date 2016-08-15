@@ -3,8 +3,8 @@ package xyz.rytix.roboTuptup;
 import org.apache.logging.log4j.Logger;
 
 import xyz.rytix.roboTuptup.proxy.CommonProxy;
-import xyz.rytix.roboTuptup.init.robo.Robo;
-import xyz.rytix.roboTuptup.item.ItemBaseRobo;
+import xyz.rytix.roboTuptup.itemBlock.ItemBlockBaseRobo;
+import xyz.rytix.roboTuptup.itemBlock.ItemBlockRobo;
 import net.minecraft.block.Block;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.Mod;
@@ -23,11 +23,12 @@ public class Tuptup
 	
 	@Instance
 	public static Tuptup instance;
-	
 	public static Logger logger;
 	
     @EventHandler
     public void preInit(FMLPreInitializationEvent event){
+    	new ItemBlockBaseRobo();
+    	new ItemBlockRobo();
     	logger = event.getModLog();
     	proxy.preInit(event);
     }
