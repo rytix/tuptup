@@ -1,8 +1,7 @@
 {
-    "parent": "block/orientable",
-    "textures": {
-        "top": "blocks/robo",
-        "front": "blocks/robo_olhos",
-        "side": "blocks/robo"
+    "parent": "block/cube_all",
+    "textures": 
+    {
+        "all": "robotuptup:blocks/baseRobo"
     }
 }

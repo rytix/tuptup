@@ -1,9 +1,9 @@
 {
     "variants":
     {
-        "normal": 
-        {
-            "model":"robotuptup:robo" 
-        }
+        "facing=north": { "model": "robotuptup:robo" },
+        "facing=south": { "model": "robotuptup:robo", "y": 180 },
+        "facing=west":  { "model": "robotuptup:robo", "y": 270 },
+        "facing=east":  { "model": "robotuptup:robo", "y": 90 }
     }
 }
