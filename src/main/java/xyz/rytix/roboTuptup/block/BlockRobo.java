@@ -2,6 +2,7 @@ package xyz.rytix.roboTuptup.block;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -53,19 +54,10 @@ public class BlockRobo extends Block{
 	
 	public BlockRobo() {
 		super(Material.CLOTH);
-		// TODO Auto-generated constructor stub
-		for(IProperty pro :getBlockState().getBaseState().getPropertyNames()){
-			System.out.println(pro.getName());
-		}
-		System.out.println(":(");
-		setDefaultState(getDefaultState().withProperty(FACING, EnumFacing.NORTH)); //getBlockState().getBaseState().withProperty(FACING, EnumFacing.NORTH));
-	}
-	
-	@Override
-	protected BlockStateContainer createBlockState(){
-		return new BlockStateContainer(this, new IProperty[] {FACING});
+		setDefaultState(getDefaultState().withProperty(FACING, EnumFacing.NORTH));
 		
 	}
+	
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos,
 			IBlockState state, EntityPlayer playerIn, EnumHand hand,
@@ -73,20 +65,45 @@ public class BlockRobo extends Block{
 			float hitZ) {
 		side.rotateY();
 		// TODO Auto-generated method stub
-		if(side == EnumFacing.SOUTH){
-			worldIn.setBlockToAir(pos);
-			worldIn.setBlockState(pos.add(0, 0, -1), getDefaultState().withProperty(FACING, EnumFacing.WEST));
-		}
+//		if(side == EnumFacing.SOUTH){
+//			worldIn.setBlockToAir(pos);
+//			worldIn.setBlockState(pos.add(0, 0, -1), getDefaultState().withProperty(FACING, EnumFacing.WEST));
+//		}
 		
+		worldIn.scheduleBlockUpdate(pos, this, 200, 1);
 		return super.onBlockActivated(worldIn, pos, state, playerIn, hand, heldItem,
 				side, hitX, hitY, hitZ);
 	}
 	
+	@Override
+	public void updateTick(World worldIn, BlockPos pos, IBlockState state,
+			Random rand) {
+		worldIn.setBlockToAir(pos);
+		System.out.println(state.getProperties().get(FACING));
+		//worldIn.setBlockState(pos.add(0, 0, -1), getDefaultState().withProperty(FACING, state.getProperties()));
+		// TODO Auto-generated method stub
+		super.updateTick(worldIn, pos, state, rand);
+	}
+	
+	/*
+	 * Define quais propriedades este bloco terá, se não sobrescrever ele terá a default.
+	 * \nA default não possui propriedades
+	 * {
+	 */
+	@Override
+	protected BlockStateContainer createBlockState(){
+		return new BlockStateContainer(this, new IProperty[] {FACING});
+		
+	}
+	// }
+	//Funções Necessárias para ler o modelo da textura {
+	@Override
 	public int getMetaFromState(IBlockState state)
     {
         return ((EnumFacing)state.getValue(FACING)).getIndex();
     }
 	
+	@Override
 	public IBlockState getStateFromMeta(int meta)
     {
         EnumFacing enumfacing = EnumFacing.getFront(meta);
@@ -98,7 +115,11 @@ public class BlockRobo extends Block{
 
         return this.getDefaultState().withProperty(FACING, enumfacing);
     }
-
-	
-
+	// }
+	// Função que faz as faces dos blocos próximos a este serem renderizados {
+	@Override
+	public boolean isOpaqueCube(IBlockState state) {
+		return false;
+	}
+	// }
 }
