@@ -34,6 +34,7 @@ import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
@@ -58,6 +59,8 @@ public class BlockRobo extends Block{
 		
 	}
 	
+	
+	
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos,
 			IBlockState state, EntityPlayer playerIn, EnumHand hand,
@@ -69,8 +72,10 @@ public class BlockRobo extends Block{
 //			worldIn.setBlockToAir(pos);
 //			worldIn.setBlockState(pos.add(0, 0, -1), getDefaultState().withProperty(FACING, EnumFacing.WEST));
 //		}
+		worldIn.getBlockState(pos).getProperties().get(FACING);
+		worldIn.setBlockToAir(pos);
+		worldIn.setBlockState(pos, getDefaultState().withProperty(FACING, side.rotateY()));
 		
-		worldIn.scheduleBlockUpdate(pos, this, 200, 1);
 		return super.onBlockActivated(worldIn, pos, state, playerIn, hand, heldItem,
 				side, hitX, hitY, hitZ);
 	}
