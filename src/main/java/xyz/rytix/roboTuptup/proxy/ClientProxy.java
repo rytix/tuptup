@@ -1,9 +1,13 @@
 package xyz.rytix.roboTuptup.proxy;
 
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import xyz.rytix.roboTuptup.Config;
 import xyz.rytix.roboTuptup.block.BlockRobo;
+import xyz.rytix.roboTuptup.entity.TileEntityBaseRobo;
 import xyz.rytix.roboTuptup.helper.Initializer;
 import xyz.rytix.roboTuptup.itemBlock.ItemBlockBaseRobo;
 
@@ -14,7 +18,8 @@ public class ClientProxy extends CommonProxy{
 		super.preInit(event);
 		Initializer.preInitAll();
 		//Inits
-		Initializer.initAll();
+		Initializer.registerBlocksAndItemBlocks();
+		
 	}
 	
 	@Override
@@ -22,7 +27,7 @@ public class ClientProxy extends CommonProxy{
 		super.init(event);
 		
 		//RegisterRenders
-		Initializer.registerAllRenders();
+		Initializer.registerBlocksAndItemBlocksRenders();
 	}
 	
 	@Override

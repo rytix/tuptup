@@ -59,7 +59,21 @@ public class BlockRobo extends Block{
 		
 	}
 	
+	@Override
+	public IBlockState onBlockPlaced(World worldIn, BlockPos pos,
+			EnumFacing facing, float hitX, float hitY, float hitZ, int meta,
+			EntityLivingBase placer) {
+		System.out.println("ROBO PLACED !!!!!!!!!!!!!!");
+		return super
+				.onBlockPlaced(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer);
+	}
 	
+	@Override
+	public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {
+		System.out.println("ROBO ADDED !!!!!!!!!!!!!!");
+		// TODO Auto-generated method stub
+		super.onBlockAdded(worldIn, pos, state);
+	}
 	
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos,
