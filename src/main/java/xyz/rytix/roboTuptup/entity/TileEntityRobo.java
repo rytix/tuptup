@@ -1,11 +1,8 @@
 package xyz.rytix.roboTuptup.entity;
 
-import xyz.rytix.roboTuptup.block.BlockRobo;
-import xyz.rytix.roboTuptup.block.BlockRobo.Move;
 import xyz.rytix.roboTuptup.helper.Initializer;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -13,20 +10,19 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 
-public class TileEntityBaseRobo extends TileEntity implements ITickable, IInventory{	
-	private BlockPos pos_robo = null;
+public class TileEntityRobo extends TileEntity implements ITickable, IInventory{	
+	private BlockPos base;
 	
-	public BlockPos getPos_robo() {
-		return pos_robo;
-	}
-	public void onBlockPlacedBy(BlockPos pos){
-		pos_robo = pos.up();
-		worldObj.setBlockState(pos_robo, Initializer.BLOCK_ROBO.getDefaultState());
-		((TileEntityRobo)worldObj.getTileEntity(pos_robo)).setBase(pos);
+	public TileEntityRobo() {
+
 	}
 	
-	public void onBlockActivated(BlockPos pos){
-		pos_robo = Initializer.BLOCK_ROBO.moveRobot(worldObj, pos_robo, Move.FRONT);
+	public void setBase(BlockPos base) {
+		this.base = base;
+	}
+	
+	public BlockPos getBase() {
+		return base;
 	}
 	
 	///ITickable Interface
