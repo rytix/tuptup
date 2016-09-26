@@ -9,6 +9,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
@@ -27,6 +28,22 @@ public class TileEntityBaseRobo extends TileEntity implements ITickable, IInvent
 	
 	public void onBlockActivated(BlockPos pos){
 		pos_robo = Initializer.BLOCK_ROBO.moveRobot(worldObj, pos_robo, Move.FRONT);
+	}
+	
+	@Override
+	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+		compound.setIntArray("pos_robo", new int[]{pos_robo.getX(),pos_robo.getY(),pos_robo.getZ()});
+		return super.writeToNBT(compound);
+	}
+	
+	@Override
+	public void readFromNBT(NBTTagCompound compound) {
+		int[] pos_robo = compound.getIntArray("pos_robo");
+		if(pos_robo.length == 0){
+			return;
+		}
+		this.pos_robo = new BlockPos(pos_robo[0],pos_robo[1],pos_robo[2]);
+		super.readFromNBT(compound);
 	}
 	
 	///ITickable Interface
