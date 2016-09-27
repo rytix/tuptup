@@ -7,42 +7,78 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityLockableLoot;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.ILockableContainer;
+import net.minecraft.world.LockCode;
 
-public class TileEntityBaseRobo extends TileEntity implements ITickable, IInventory{	
-	private BlockPos pos_robo = null;
-	
+public class TileEntityBaseRobo extends TileEntityLockableLoot implements ITickable, IInventory{	
+	private String customName;
+	private BlockPos roboPos = null;
+	private ItemStack[] roboItemStack = new ItemStack[36];
 	public BlockPos getPos_robo() {
-		return pos_robo;
+		return roboPos;
 	}
 	public void onBlockPlacedBy(BlockPos pos){
-		pos_robo = pos.up();
-		worldObj.setBlockState(pos_robo, Initializer.BLOCK_ROBO.getDefaultState());
-		((TileEntityRobo)worldObj.getTileEntity(pos_robo)).setBase(pos);
+		roboPos = pos.up();
+		worldObj.setBlockState(roboPos, Initializer.BLOCK_ROBO.getDefaultState());
+		((TileEntityRobo)worldObj.getTileEntity(roboPos)).setBase(pos);
 	}
 	
 	public void onBlockActivated(BlockPos pos){
-		pos_robo = Initializer.BLOCK_ROBO.moveRobot(worldObj, pos_robo, Move.FRONT);
+		roboPos = Initializer.BLOCK_ROBO.moveRobot(worldObj, roboPos, Move.FRONT);
 	}
 	
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-		compound.setIntArray("pos_robo", new int[]{pos_robo.getX(),pos_robo.getY(),pos_robo.getZ()});
+		compound.setIntArray("roboPos", new int[]{roboPos.getX(),roboPos.getY(),roboPos.getZ()});
+		
+		NBTTagList nbttaglist = new NBTTagList();
+        for (int i = 0; i < this.roboItemStack.length; ++i)
+        {
+            if (this.roboItemStack[i] != null)
+            {
+                NBTTagCompound nbttagcompound = new NBTTagCompound();
+                nbttagcompound.setByte("Slot", (byte)i);
+                this.roboItemStack[i].writeToNBT(nbttagcompound);
+                nbttaglist.appendTag(nbttagcompound);
+            }
+        }
+        compound.setTag("Items", nbttaglist);
+		
 		return super.writeToNBT(compound);
 	}
 	
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
-		int[] pos_robo = compound.getIntArray("pos_robo");
+		int[] pos_robo = compound.getIntArray("roboPos");
 		if(pos_robo.length == 0){
 			return;
 		}
-		this.pos_robo = new BlockPos(pos_robo[0],pos_robo[1],pos_robo[2]);
+		
+		NBTTagList nbttaglist = compound.getTagList("Items", 10);
+        this.roboItemStack = new ItemStack[this.getSizeInventory()];
+        for (int i = 0; i < nbttaglist.tagCount(); ++i)
+        {
+            NBTTagCompound nbttagcompound = nbttaglist.getCompoundTagAt(i);
+            int j = nbttagcompound.getByte("Slot");
+            if (j >= 0 && j < this.roboItemStack.length)
+            {
+                this.roboItemStack[j] = ItemStack.loadItemStackFromNBT(nbttagcompound);
+            }
+        }
+		
+		this.roboPos = new BlockPos(pos_robo[0],pos_robo[1],pos_robo[2]);
 		super.readFromNBT(compound);
 	}
 	
@@ -50,86 +86,94 @@ public class TileEntityBaseRobo extends TileEntity implements ITickable, IInvent
 	@Override
 	public void update() {
 		// TODO Auto-generated method stub
-		
 	}
 	//IInventory Interface
 	@Override
 	public String getName() {
-		return null;
+		return this.hasCustomName() ? this.customName : "container.baseRobo";
 	}
 	@Override
 	public boolean hasCustomName() {
-		// TODO Auto-generated method stub
-		return false;
+		return this.customName != null && !this.customName.isEmpty();
 	}
 	@Override
 	public int getSizeInventory() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.roboItemStack.length;
 	}
 	@Override
 	public ItemStack getStackInSlot(int index) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.roboItemStack[index];
 	}
 	@Override
 	public ItemStack decrStackSize(int index, int count) {
-		// TODO Auto-generated method stub
-		return null;
+		ItemStack itemstack = ItemStackHelper.getAndSplit(this.roboItemStack, index, count);
+		if (itemstack != null)
+        {
+            this.markDirty();
+        }
+		return itemstack;
 	}
 	@Override
 	public ItemStack removeStackFromSlot(int index) {
-		// TODO Auto-generated method stub
-		return null;
+		return ItemStackHelper.getAndRemove(this.roboItemStack, index);
 	}
 	@Override
 	public void setInventorySlotContents(int index, ItemStack stack) {
-		// TODO Auto-generated method stub
+		this.roboItemStack[index] = stack;
+
+        if (stack != null && stack.stackSize > this.getInventoryStackLimit())
+        {
+            stack.stackSize = this.getInventoryStackLimit();
+        }
+
+        this.markDirty();
 		
 	}
 	@Override
 	public int getInventoryStackLimit() {
-		// TODO Auto-generated method stub
-		return 0;
+		return 64;
 	}
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer player) {
-		// TODO Auto-generated method stub
-		return false;
+        return this.worldObj.getTileEntity(this.pos) != this ? false : player.getDistanceSq((double)this.pos.getX() + 0.5D, (double)this.pos.getY() + 0.5D, (double)this.pos.getZ() + 0.5D) <= 64.0D;
 	}
 	@Override
-	public void openInventory(EntityPlayer player) {
-		// TODO Auto-generated method stub
-		
+	public void openInventory(EntityPlayer player) {		
 	}
 	@Override
-	public void closeInventory(EntityPlayer player) {
-		// TODO Auto-generated method stub
-		
+	public void closeInventory(EntityPlayer player) {		
 	}
 	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 	@Override
 	public int getField(int id) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 	@Override
-	public void setField(int id, int value) {
-		// TODO Auto-generated method stub
-		
+	public void setField(int id, int value) {		
 	}
 	@Override
 	public int getFieldCount() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 	@Override
 	public void clear() {
-		// TODO Auto-generated method stub
-		
+		for (int i = 0; i < this.roboItemStack.length; ++i)
+        {
+            this.roboItemStack[i] = null;
+        }
+	}
+	//TileEntityLockableLoot Abstract Methods
+	@Override
+	public Container createContainer(InventoryPlayer playerInventory,
+			EntityPlayer playerIn) {
+		this.fillWithLoot(playerIn);
+		return new ContainerChest(playerInventory, this, playerIn);
+	}
+	@Override
+	public String getGuiID() {
+		return "minecraft:furnace";
 	}
 }

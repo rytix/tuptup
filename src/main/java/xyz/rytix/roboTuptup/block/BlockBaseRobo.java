@@ -23,6 +23,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
+import net.minecraft.world.ILockableContainer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
@@ -40,8 +41,17 @@ public class BlockBaseRobo extends Block implements ITileEntityProvider{
 		if(worldIn.isRemote){
 			return true;
 		}
+		
+		//ILockableContainer ilockablecontainer = this.getLockableContainer(worldIn, pos);
+
+//        if (ilockablecontainer != null)
+//        {
+//            playerIn.displayGUIChest(ilockablecontainer);
+//        }
+		
 		TileEntityBaseRobo tileEntity = (TileEntityBaseRobo)worldIn.getTileEntity(pos);
-		tileEntity.onBlockActivated(pos);
+		playerIn.displayGUIChest(tileEntity);
+		//tileEntity.onBlockActivated(pos);
 		// TODO Auto-generated method stub
 		return super.onBlockActivated(worldIn, pos, state, playerIn, hand, heldItem,
 				side, hitX, hitY, hitZ);

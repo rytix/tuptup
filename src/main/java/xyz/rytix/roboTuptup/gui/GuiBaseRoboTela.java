@@ -7,9 +7,9 @@ import com.sun.prism.paint.Color;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 
-public class GuiRoboTela extends GuiContainer{
+public class GuiBaseRoboTela extends GuiContainer{
 
-	public GuiRoboTela(Container inventorySlotsIn) {
+	public GuiBaseRoboTela(Container inventorySlotsIn) {
 		super(inventorySlotsIn);
 		// TODO Auto-generated constructor stub
 	}
