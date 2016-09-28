@@ -1,6 +1,8 @@
 package xyz.rytix.roboTuptup.block;
 
+import xyz.rytix.roboTuptup.Tuptup;
 import xyz.rytix.roboTuptup.entity.TileEntityBaseRobo;
+import xyz.rytix.roboTuptup.gui.TuptupGuiHandler;
 import xyz.rytix.roboTuptup.helper.Initializer;
 import akka.io.Tcp.Register;
 import net.minecraft.block.Block;
@@ -50,7 +52,7 @@ public class BlockBaseRobo extends Block implements ITileEntityProvider{
 //        }
 		
 		TileEntityBaseRobo tileEntity = (TileEntityBaseRobo)worldIn.getTileEntity(pos);
-		playerIn.displayGUIChest(tileEntity);
+		playerIn.openGui(Tuptup.instance, TuptupGuiHandler.BASE_GUI, worldIn, pos.getX(), pos.getY(), pos.getZ());
 		//tileEntity.onBlockActivated(pos);
 		// TODO Auto-generated method stub
 		return super.onBlockActivated(worldIn, pos, state, playerIn, hand, heldItem,

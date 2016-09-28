@@ -22,7 +22,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ILockableContainer;
 import net.minecraft.world.LockCode;
 
-public class TileEntityBaseRobo extends TileEntityLockableLoot implements ITickable, IInventory{	
+public class TileEntityBaseRobo extends TileEntity implements ITickable, IInventory{	
 	private String customName;
 	private BlockPos roboPos = null;
 	private ItemStack[] roboItemStack = new ItemStack[36];
@@ -164,16 +164,5 @@ public class TileEntityBaseRobo extends TileEntityLockableLoot implements ITicka
         {
             this.roboItemStack[i] = null;
         }
-	}
-	//TileEntityLockableLoot Abstract Methods
-	@Override
-	public Container createContainer(InventoryPlayer playerInventory,
-			EntityPlayer playerIn) {
-		this.fillWithLoot(playerIn);
-		return new ContainerChest(playerInventory, this, playerIn);
-	}
-	@Override
-	public String getGuiID() {
-		return "minecraft:furnace";
 	}
 }
