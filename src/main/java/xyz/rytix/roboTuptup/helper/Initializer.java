@@ -46,7 +46,7 @@ public final class Initializer {
 
 	public static final void preInitAll() {
 		try {
-			BLOCK_BASE_ROBO = new BlockBaseRobo(Material.CLOTH);
+			BLOCK_BASE_ROBO = new BlockBaseRobo(Material.ROCK);
 			BLOCK_ROBO = new BlockRobo();
 
 			ITEM_BLOCK_BASE_ROBO = new ItemBlockBaseRobo(BLOCK_BASE_ROBO);

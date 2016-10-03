@@ -18,6 +18,8 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -55,8 +57,7 @@ public class BlockBaseRobo extends Block implements ITileEntityProvider{
 		playerIn.openGui(Tuptup.instance, TuptupGuiHandler.BASE_GUI, worldIn, pos.getX(), pos.getY(), pos.getZ());
 		//tileEntity.onBlockActivated(pos);
 		// TODO Auto-generated method stub
-		return super.onBlockActivated(worldIn, pos, state, playerIn, hand, heldItem,
-				side, hitX, hitY, hitZ);
+		return true;
 	}
 	
 	@Override
@@ -89,7 +90,17 @@ public class BlockBaseRobo extends Block implements ITileEntityProvider{
 	
 	@Override
 	public boolean canPlaceBlockAt(World worldIn, BlockPos pos) {
-		return isAir(worldIn.getBlockState(pos.up()), worldIn, pos.up()) ? super.canPlaceBlockAt(worldIn, pos) : false;
+		return isAir(worldIn.getBlockState(pos.up()), worldIn, pos.up()) ? (super.canPlaceBlockAt(worldIn, pos) ? pos.getY() < 255 : false) : false;
+	}
+	
+	@Override
+	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
+		// TODO Auto-generated method stub
+		TileEntity tileentity = worldIn.getTileEntity(pos);
+        InventoryHelper.dropInventoryItems(worldIn, pos, (IInventory)tileentity);
+        worldIn.updateComparatorOutputLevel(pos, this);
+        
+		super.breakBlock(worldIn, pos, state);
 	}
 	
 	@Override

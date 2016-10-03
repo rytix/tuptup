@@ -25,7 +25,7 @@ import net.minecraft.world.LockCode;
 public class TileEntityBaseRobo extends TileEntity implements ITickable, IInventory{	
 	private String customName;
 	private BlockPos roboPos = null;
-	private ItemStack[] roboItemStack = new ItemStack[36];
+	private ItemStack[] roboItemStack = new ItemStack[42];
 	public BlockPos getPos_robo() {
 		return roboPos;
 	}
