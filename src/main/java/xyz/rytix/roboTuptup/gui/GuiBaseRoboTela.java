@@ -2,8 +2,11 @@ package xyz.rytix.roboTuptup.gui;
 
 import java.io.IOException;
 
+import javax.swing.JOptionPane;
+
 import org.lwjgl.opengl.GL11;
 
+import sun.java2d.loops.DrawRect;
 import xyz.rytix.roboTuptup.Config;
 import xyz.rytix.roboTuptup.Tuptup;
 import xyz.rytix.roboTuptup.entity.TileEntityBaseRobo;
@@ -12,6 +15,10 @@ import com.sun.prism.paint.Color;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
@@ -43,25 +50,33 @@ public class GuiBaseRoboTela extends GuiContainer{
 	}
 	
 	@Override
-	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-		
-		//drawDefaultBackground();
-		//drawGradientRect(20, 20, width-20, height - 20, 0x60bb0000, 0xa077055);
-		
-		super.drawScreen(mouseX, mouseY, partialTicks);
+	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+		drawRect(guiLeft,guiTop, guiLeft+87, guiTop+23, 0xFF990000);
+	};
+	
+	private void drawThisThing(){
+        Tessellator tessellator = Tessellator.getInstance();
+        VertexBuffer vertexbuffer = tessellator.getBuffer();
+        GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.color(255, 230, 53, 66);
+        vertexbuffer.begin(7, DefaultVertexFormats.POSITION);
+        vertexbuffer.pos((double)30, (double)30, 0.0D).endVertex();
+        vertexbuffer.pos((double)600, (double)30, 0.0D).endVertex();
+        vertexbuffer.pos((double)30, (double)600, 0.0D).endVertex();
+        vertexbuffer.pos((double)30, (double)600, 0.0D).endVertex();
+        tessellator.draw();
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
 	}
 	
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks,
 			int mouseX, int mouseY) {
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		//drawCenteredString(fontRendererObj, "BLKA", width/2, 45, 0x440011);
-
-		int k = (this.width - this.xSize) / 2;
-		int l = (this.height - this.ySize) / 2;
 		
 		mc.renderEngine.bindTexture(new ResourceLocation(Config.MOD_ID,"textures/gui/baseRobo.png"));
-		this.drawTexturedModalRect(k, l, 0, 0, xSize, ySize);
+		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 	}
 		
 	
