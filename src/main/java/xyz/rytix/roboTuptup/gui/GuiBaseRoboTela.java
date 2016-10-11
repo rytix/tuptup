@@ -51,7 +51,7 @@ public class GuiBaseRoboTela extends GuiContainer{
 	
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		drawRect(guiLeft,guiTop, guiLeft+87, guiTop+23, 0xFF990000);
+		//sthis.drawRect(guiLeft,guiTop, guiLeft+87, guiTop+23, 0xFF990000);
 	};
 	
 	private void drawThisThing(){
@@ -77,6 +77,7 @@ public class GuiBaseRoboTela extends GuiContainer{
 		
 		mc.renderEngine.bindTexture(new ResourceLocation(Config.MOD_ID,"textures/gui/baseRobo.png"));
 		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.drawRect(guiLeft,guiTop, guiLeft+87, guiTop+23, 0xFF990000);
 	}
 		
 	
