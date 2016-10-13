@@ -51,24 +51,35 @@ public class GuiBaseRoboTela extends GuiContainer{
 	
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+		//Bugged
 		//sthis.drawRect(guiLeft,guiTop, guiLeft+87, guiTop+23, 0xFF990000);
 	};
 	
-	private void drawThisThing(){
-        Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer vertexbuffer = tessellator.getBuffer();
-        GlStateManager.enableBlend();
-        GlStateManager.disableTexture2D();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.color(255, 230, 53, 66);
-        vertexbuffer.begin(7, DefaultVertexFormats.POSITION);
-        vertexbuffer.pos((double)30, (double)30, 0.0D).endVertex();
-        vertexbuffer.pos((double)600, (double)30, 0.0D).endVertex();
-        vertexbuffer.pos((double)30, (double)600, 0.0D).endVertex();
-        vertexbuffer.pos((double)30, (double)600, 0.0D).endVertex();
-        tessellator.draw();
-        GlStateManager.enableTexture2D();
-        GlStateManager.disableBlend();
+	private void drawThisThing(int left, int top, int right, int bottom, int color){
+		    Tessellator tessellator = Tessellator.getInstance();
+	        VertexBuffer vertexbuffer = tessellator.getBuffer();
+	        
+	        GlStateManager.pushMatrix();
+	        GlStateManager.pushAttrib();
+	        
+	        GlStateManager.enableBlend(); //Aceita transparencia
+	        GlStateManager.disableTexture2D();
+	        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+	        GlStateManager.color(255/255.0F, 230/255.0F, 53/255.0F, 1.0F);
+	        
+	        //GlStateManager.matrixMode(GL11.GL_PROJECTION);
+	        GlStateManager.viewport(0, 0, width, height);
+	        GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+	        
+	        vertexbuffer.begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION);
+	        vertexbuffer.pos((double)left, (double)bottom, 0.0D).endVertex();
+	        vertexbuffer.pos((double)right, (double)bottom, 0.0D).endVertex();
+	        vertexbuffer.pos((double)right, (double)top, 0.0D).endVertex();
+	        
+	        tessellator.draw();
+	        
+	        GlStateManager.popAttrib();
+	        GlStateManager.popMatrix();
 	}
 	
 	@Override
@@ -77,7 +88,8 @@ public class GuiBaseRoboTela extends GuiContainer{
 		
 		mc.renderEngine.bindTexture(new ResourceLocation(Config.MOD_ID,"textures/gui/baseRobo.png"));
 		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
-		this.drawRect(guiLeft,guiTop, guiLeft+87, guiTop+23, 0xFF990000);
+		//this.drawRect(guiLeft,guiTop, guiLeft+87, guiTop+23, 0xFF990000);
+		this.drawThisThing(guiLeft,guiTop, guiLeft+87, guiTop+23, 0xFF990000);
 	}
 		
 	
