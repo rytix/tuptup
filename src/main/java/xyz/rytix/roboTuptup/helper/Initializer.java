@@ -48,7 +48,6 @@ public final class Initializer {
 		try {
 			BLOCK_BASE_ROBO = new BlockBaseRobo(Material.ROCK);
 			BLOCK_ROBO = new BlockRobo();
-
 			ITEM_BLOCK_BASE_ROBO = new ItemBlockBaseRobo(BLOCK_BASE_ROBO);
 			
 			Initializer.addToInitialization(ITEM_BLOCK_BASE_ROBO, "baseRobo");

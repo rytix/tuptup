@@ -1,5 +1,7 @@
 package xyz.rytix.roboTuptup.gui.model;
 
+import java.util.List;
+
 public abstract class ScratchBloco {
 	protected final boolean podePorBlocosAposInstrucao; // A instrução aceita blocos após ela (não é uma instrução final)
 	protected final boolean podePorBlocosDentroInstrucao; // A instrução aceita blocos dentro dela, como por exemplo o "while"
@@ -15,6 +17,8 @@ public abstract class ScratchBloco {
 	
 	protected int x;
 	protected int y;
+	
+	int[] colisionBox;
 	
 	public ScratchBloco(boolean podePorBlocosAposInstrucao, boolean podePorBlocosDentroInstrucao, Class[] blocosNaAssinaturaAceitaveis) {
 		this.podePorBlocosAposInstrucao = podePorBlocosAposInstrucao;
