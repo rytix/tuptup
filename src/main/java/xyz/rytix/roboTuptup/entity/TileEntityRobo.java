@@ -42,6 +42,7 @@ public class TileEntityRobo extends TileEntity implements ITickable{
 		super.readFromNBT(compound);
 	}
 	
+	
 	///ITickable Interface
 	@Override
 	public void update() {

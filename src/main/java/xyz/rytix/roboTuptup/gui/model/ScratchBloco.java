@@ -1,6 +1,7 @@
 package xyz.rytix.roboTuptup.gui.model;
 
 import java.util.List;
+import java.util.Stack;
 
 public abstract class ScratchBloco {
 	protected final boolean podePorBlocosAposInstrucao; // A instrução aceita blocos após ela (não é uma instrução final)
@@ -19,15 +20,19 @@ public abstract class ScratchBloco {
 	protected int y;
 	
 	int[] colisionBox;
+	int[] drawPoints;
 	
 	public ScratchBloco(boolean podePorBlocosAposInstrucao, boolean podePorBlocosDentroInstrucao, Class[] blocosNaAssinaturaAceitaveis) {
 		this.podePorBlocosAposInstrucao = podePorBlocosAposInstrucao;
 		this.podePorBlocosDentroInstrucao = podePorBlocosDentroInstrucao;
 		this.blocosNaAssinaturaAceitaveis = blocosNaAssinaturaAceitaveis;
-		this.blocosNaAssinatura = new Object[blocosNaAssinaturaAceitaveis.length];
+		if(blocosNaAssinaturaAceitaveis == null){
+			this.blocosNaAssinatura = null;
+		}else{
+			this.blocosNaAssinatura = new Object[blocosNaAssinaturaAceitaveis.length];
+		}
 	}
 	
-	public abstract void draw();
 	public abstract void action();
 	
 	public boolean isPodePorBlocosAposInstrucao() {
@@ -42,4 +47,5 @@ public abstract class ScratchBloco {
 	public int getY() {
 		return y;
 	}
+	public abstract void fillWithDrawPoints(Stack<int[]> stack);
 }
