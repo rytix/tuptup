@@ -15,7 +15,7 @@ import sun.java2d.loops.DrawRect;
 import xyz.rytix.roboTuptup.Config;
 import xyz.rytix.roboTuptup.Tuptup;
 import xyz.rytix.roboTuptup.entity.TileEntityBaseRobo;
-import xyz.rytix.roboTuptup.gui.helpers.CodeAreaHelper;
+import xyz.rytix.roboTuptup.gui.components.ScrollPanelComponent;
 import xyz.rytix.roboTuptup.gui.helpers.MouseGlobalHelper;
 import xyz.rytix.roboTuptup.gui.model.ScratchBloco;
 import xyz.rytix.roboTuptup.gui.model.ScratchBlocoTest;
@@ -38,9 +38,8 @@ import net.minecraftforge.fml.client.GuiScrollingList;
 public class GuiBaseRoboTela extends GuiContainer {
 
 	private int[] baseCoordsAndSizeBlockArea = {18,124,84,118};
-	CodeAreaHelper codeAreaHelper = new CodeAreaHelper(Mouse.getX(), Mouse.getY());
-	
-	List<ScratchBloco> scratchBlocos = new ArrayList();
+	List<ScrollPanelComponent> scrollPanelComponents;
+	List<ScratchBloco> scratchBlocos = new ArrayList(); // Vai para o robô
 	
 	public GuiBaseRoboTela(IInventory playerInv,
 			TileEntityBaseRobo baseRoboEntity) {
@@ -49,6 +48,11 @@ public class GuiBaseRoboTela extends GuiContainer {
 		scratchBlocos.add(new ScratchBlocoTest());
 		this.xSize = 256;
 		this.ySize = 242;
+		
+		scrollPanelComponents =  new ArrayList();
+		scrollPanelComponents.add(new ScrollPanelComponent(103,1,124,152,118,500,500,guiLeft,guiTop));
+		scrollPanelComponents.add(new ScrollPanelComponent(18,1,124,84,118,500,500,guiLeft,guiTop));
+
 	}
 
 	@Override
@@ -87,7 +91,7 @@ public class GuiBaseRoboTela extends GuiContainer {
         vertexbuffer.pos((double)left + 50, (double)top, 0.0D).endVertex();
         tessellator.draw();
         
-        limitarDesenhosAAreaDeCodigo();
+        //limitarDesenhosAAreaDeCodigo();
         
         this.drawRect(0,0, width, height, 0xFF990000);
         
@@ -105,7 +109,8 @@ public class GuiBaseRoboTela extends GuiContainer {
 		mc.renderEngine.bindTexture(new ResourceLocation(Config.MOD_ID,
 				"textures/gui/baseRobo.png"));
 		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
-		this.drawCodeArea(mouseX, mouseY);
+		this.verificarCliques(mouseX,mouseY);
+		this.drawScrollComponents(mouseX, mouseY);
 	}
 	
 	@Override
@@ -113,68 +118,79 @@ public class GuiBaseRoboTela extends GuiContainer {
 		return true;
 	}
 	
-	private void drawCodeAreaBorders(){
-		int xDrawningBase = guiLeft+CodeAreaHelper.baseCoordsAndSizeCodeArea[0]+codeAreaHelper.xScroll;
-		int yDrawningBase = guiTop+1+codeAreaHelper.yScroll;
-		int largura = codeAreaHelper.LARGURA;
-		int altura = codeAreaHelper.ALTURA;
-		int grossura = codeAreaHelper.GROSSURA;
-		
-		limitarDesenhosAAreaDeCodigo();
-		drawRect(xDrawningBase, yDrawningBase, xDrawningBase+largura, yDrawningBase+grossura, 0xFF990000);
-		drawRect(xDrawningBase, yDrawningBase, xDrawningBase+grossura, yDrawningBase+altura, 0xFF990000);
-		drawRect(xDrawningBase+largura-grossura, yDrawningBase, xDrawningBase+largura, yDrawningBase+altura, 0xFF990000);
-		drawRect(xDrawningBase, yDrawningBase+altura-grossura, xDrawningBase+largura, yDrawningBase+altura, 0xFF990000);
-		removerLimite();
+	private void drawAreaBorders(ScrollPanelComponent comp){
+		drawAreaBorders(
+				comp.left + comp.xScroll,
+				comp.top + comp.yScroll,
+				comp.SCROLL_WIDTH,comp.SCROLL_HEIGHT);
 	}
 	
-	private void drawCodeArea(int mouseX, int mouseY){
-		if(!Mouse.isButtonDown(0))
-			MouseGlobalHelper.falsificate();
-		if(Mouse.isButtonDown(0) && !MouseGlobalHelper.holding){
+	private void drawAreaBorders(int x, int y, int width, int height){
+		int grossura = 3;
+		
+		drawRect(x, y, x+width, y+grossura, 0xFF990000);
+		drawRect(x, y, x+grossura, y+height, 0xFF990000);
+		drawRect(x+width-grossura, y, x+width, y+height, 0xFF990000);
+		drawRect(x, y+height-grossura, x+width, y+height, 0xFF990000);
+	}
+	
+	private void verificarCliques(int mouseX,int mouseY){
+		if(!Mouse.isButtonDown(0)){
+			MouseGlobalHelper.holding = false;
+			for(ScrollPanelComponent scrollPanelComponent : scrollPanelComponents){
+				scrollPanelComponent.scrollingOnArea = false;
+			}
+		}else if(Mouse.isButtonDown(0) && !MouseGlobalHelper.holding){
 			MouseGlobalHelper.holding = true;
-			if(MouseGlobalHelper.holding && mouseX >= guiLeft + CodeAreaHelper.baseCoordsAndSizeCodeArea[0]
-				&& mouseX <= guiLeft + CodeAreaHelper.baseCoordsAndSizeCodeArea[0] + CodeAreaHelper.baseCoordsAndSizeCodeArea[2]
-				&& mouseY >= guiTop + 1
-				&& mouseY <= guiTop + 1 + CodeAreaHelper.baseCoordsAndSizeCodeArea[3]){
-				MouseGlobalHelper.scrollingOnCodeArea = true;
+			for(ScrollPanelComponent scrollPanelComponent : scrollPanelComponents){
+				if(scrollPanelComponent.isMouseInside(mouseX, mouseY))
+					scrollPanelComponent.scrollingOnArea = true;
 			}
 		}
-		codeAreaHelper.processScroll(mouseX, mouseY, MouseGlobalHelper.scrollingOnCodeArea);
-		
-		Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer vertexbuffer = tessellator.getBuffer();
-        
-		drawCodeAreaBorders();
-
-        GlStateManager.pushMatrix();
-        GlStateManager.pushAttrib();
-        
-        GlStateManager.enableBlend(); //Aceita transparencia
-        GlStateManager.disableTexture2D();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-
-        limitarDesenhosAAreaDeCodigo();
-
-		for(ScratchBloco sb : scratchBlocos){
-			Stack<int[]> stackOfDrawPoints = new Stack();
-			sb.fillWithDrawPoints(stackOfDrawPoints);
+	}
+	
+	private void drawScrollComponents(int mouseX, int mouseY){
+		for(ScrollPanelComponent spc: scrollPanelComponents){
+			spc.refreshGuiPosition(guiLeft, guiTop);		
+			spc.processScroll(mouseX, mouseY, spc.scrollingOnArea);
 			
-			while(!stackOfDrawPoints.isEmpty()){
-				int[] drawPoints = stackOfDrawPoints.pop();
-				GlStateManager.color(241/255.0F, 80/255.0F, 132/255.0F, 1.0F);
-				vertexbuffer.begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION);
-				int size = drawPoints.length;
-				for(int i = 1; i < size; i+=2)
-					vertexbuffer.pos((double)drawPoints[i]+guiLeft+CodeAreaHelper.baseCoordsAndSizeCodeArea[0]+codeAreaHelper.xScroll, (double)drawPoints[i+1]+guiTop+1+codeAreaHelper.yScroll, 0.0D).endVertex();
-		        tessellator.draw();
+			Tessellator tessellator = Tessellator.getInstance();
+	        VertexBuffer vertexbuffer = tessellator.getBuffer();
+			
+	        ativarGLScissors(spc);
+			drawAreaBorders(spc);
+			removerLimite();
+			
+	        ativarGLScissors(spc);
+
+			for(ScratchBloco sb : scratchBlocos){
+				Stack<int[]> stackOfDrawPoints = new Stack();
+				sb.fillWithDrawPoints(stackOfDrawPoints);
+				
+				while(!stackOfDrawPoints.isEmpty()){
+					int[] drawPoints = stackOfDrawPoints.pop();
+					
+					GlStateManager.pushMatrix();
+				    GlStateManager.pushAttrib();
+				    
+					GlStateManager.color(241/255.0F, 80/255.0F, 132/255.0F, 1.0F);
+					vertexbuffer.begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION);
+					int size = drawPoints.length;
+					for(int i = 1; i < size; i+=2)
+						vertexbuffer.pos(
+							(double)drawPoints[i]+spc.left+spc.xScroll, 
+							(double)drawPoints[i+1]+spc.top+spc.yScroll, 
+							0.0D).endVertex();
+			        tessellator.draw();
+			        
+			        GlStateManager.popAttrib();
+			        GlStateManager.popMatrix();
+			        
+				}
 			}
+			
+			removerLimite();
 		}
-		
-		removerLimite();
-		
-        GlStateManager.popAttrib();
-        GlStateManager.popMatrix();
 	}
 	
 	//Funções que limitam area de desenho
@@ -209,14 +225,14 @@ public class GuiBaseRoboTela extends GuiContainer {
 		}
 	}
 	
-	private void limitarDesenhosAAreaDeCodigo(){
+	private void ativarGLScissors(ScrollPanelComponent comp){
 		int sr = new ScaledResolution(mc).getScaleFactor();	
-		int scaledLeft = (guiLeft + CodeAreaHelper.baseCoordsAndSizeCodeArea[0]) * sr; 
-		int scaledTop = (guiTop + CodeAreaHelper.baseCoordsAndSizeCodeArea[1]) * sr + doDarkMagicToFixTheTop(sr);
-		int scaledRight = CodeAreaHelper.baseCoordsAndSizeCodeArea[2] * sr;
-		int scaledBottom = CodeAreaHelper.baseCoordsAndSizeCodeArea[3] * sr;
-				
-		GL11.glScissor(scaledLeft,scaledTop,scaledRight,scaledBottom);
+		int scaledLeft = comp.left * sr; 
+		int scaledTop = comp.openGLScissorTop * sr + doDarkMagicToFixTheTop(sr);
+		int scaledWidth = comp.WIDTH * sr;
+		int scaledHeight = comp.HEIGHT * sr;
+		
+		GL11.glScissor(scaledLeft,scaledTop,scaledWidth,scaledHeight);
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
 	}
 	
