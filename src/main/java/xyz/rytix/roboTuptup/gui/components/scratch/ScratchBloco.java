@@ -1,11 +1,17 @@
-package xyz.rytix.roboTuptup.gui.model;
+package xyz.rytix.roboTuptup.gui.components.scratch;
 
 import java.util.List;
 import java.util.Stack;
 
-public abstract class ScratchBloco {
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.Tessellator;
+import xyz.rytix.roboTuptup.gui.interfaces.Component;
+
+public abstract class ScratchBloco extends Component{
 	protected final boolean podePorBlocosAposInstrucao; // A instrução aceita blocos após ela (não é uma instrução final)
 	protected final boolean podePorBlocosDentroInstrucao; // A instrução aceita blocos dentro dela, como por exemplo o "while"
+	protected final boolean podePorBlocosAntesInstrucao; // A instrução aceita blocos antes da instrução
+	protected final boolean ehUmBlocoExemplo;
 	
 	protected ScratchBloco pai; // Bloco anterior a este
 	
@@ -18,20 +24,24 @@ public abstract class ScratchBloco {
 	
 	protected int x;
 	protected int y;
-	
-	int[] colisionBox;
-	int[] drawPoints;
-	
-	public ScratchBloco(boolean podePorBlocosAposInstrucao, boolean podePorBlocosDentroInstrucao, Class[] blocosNaAssinaturaAceitaveis) {
+		
+	public ScratchBloco(boolean podePorBlocosAposInstrucao, 
+			boolean podePorBlocosDentroInstrucao,
+			boolean podePorBlocosAntesInstrucao,
+			boolean ehUmBlocoExemplo,
+			Class[] blocosNaAssinaturaAceitaveis, Gui gui) {
+		super(gui);
 		this.podePorBlocosAposInstrucao = podePorBlocosAposInstrucao;
 		this.podePorBlocosDentroInstrucao = podePorBlocosDentroInstrucao;
+		this.podePorBlocosAntesInstrucao = podePorBlocosAntesInstrucao;
+		this.ehUmBlocoExemplo = ehUmBlocoExemplo;
 		this.blocosNaAssinaturaAceitaveis = blocosNaAssinaturaAceitaveis;
 		if(blocosNaAssinaturaAceitaveis == null){
 			this.blocosNaAssinatura = null;
 		}else{
 			this.blocosNaAssinatura = new Object[blocosNaAssinaturaAceitaveis.length];
 		}
-	}
+	}	
 	
 	public abstract void action();
 	
@@ -41,11 +51,13 @@ public abstract class ScratchBloco {
 	public boolean isPodePorBlocosDentroInstrucao() {
 		return podePorBlocosDentroInstrucao;
 	}
+	public boolean isPodePorBlocosAntesInstrucao() {
+		return podePorBlocosAntesInstrucao;
+	}
 	public int getX() {
 		return x;
 	}
 	public int getY() {
 		return y;
 	}
-	public abstract void fillWithDrawPoints(Stack<int[]> stack);
 }
