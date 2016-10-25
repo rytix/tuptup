@@ -43,20 +43,18 @@ public class GuiBaseRoboTela extends GuiContainer {
 	public static RightClickDraggable holdObject = null;
 	
 	List<Component> components;
-	List<ScratchBloco> scratchBlocos = new ArrayList(); // Vai para o robô
 	
 
 	public GuiBaseRoboTela(IInventory playerInv,
 			TileEntityBaseRobo baseRoboEntity) {
 		super(new ContainerBaseRobo(playerInv, baseRoboEntity));
 				
-		scratchBlocos.add(new ScratchBlocoTest(this));
 		this.xSize = 256;
 		this.ySize = 242;
 		
 		components = new ArrayList();
-		components.add(new ScrollPanelComponent(103,1,124,152,118,500,500,guiLeft,guiTop,this));
-		components.add(new ScrollPanelComponent(18,1,124,84,118,500,500,guiLeft,guiTop,this));
+		components.add(new ScrollPanelComponent(103,1,152,118,500,500,this));
+		components.add(new ScrollPanelComponent(18,1,84,118,500,500,this));
 	}
 
 	@Override
@@ -80,36 +78,49 @@ public class GuiBaseRoboTela extends GuiContainer {
 		mc.renderEngine.bindTexture(new ResourceLocation(Config.MOD_ID,
 				"textures/gui/baseRobo.png"));
 		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
-
+		
+		
 		this.resolverBotaoEsquerdoSegurado(mouseX,mouseY);
-		this.drawComponents(mouseX, mouseY);
+		this.refreshPositionsAndDrawComponents(mouseX, mouseY);
 	}
 	
 	@Override
 	public boolean doesGuiPauseGame() {
 		return true;
 	}
-	
-	private void resolverBotaoEsquerdoSegurado(int mouseX,int mouseY){
-		if(!Mouse.isButtonDown(0)){
+	@Override
+	protected void mouseReleased(int mouseX, int mouseY, int state) {
+		if(holdObject != null){
+			holdObject.draggablePos(mouseX, mouseY);
 			holdObject = null;
-		}else if(Mouse.isButtonDown(0) && holdObject == null){
+		}
+		
+	}
+	private void resolverBotaoEsquerdoSegurado(int mouseX,int mouseY){
+		if(Mouse.isButtonDown(0) && holdObject == null){
 			for(Component component: components){
 				if(component.isMouseInside(mouseX, mouseY) && 
 						component instanceof RightClickDraggable){
-					holdObject = ((RightClickDraggable)component).getDraggableComponent();
-					holdObject.draggableInit(mouseX, mouseY);
+					holdObject = ((RightClickDraggable)component).getDraggableObject(mouseX, mouseY);
+					holdObject.draggablePre(mouseX, mouseY);
 				}
 			}
 		}else if(holdObject != null){
 			holdObject.draggableAction(mouseX, mouseY);
 		}
 	}
-	
-	private void drawComponents(int mouseX, int mouseY){
+		
+	private void refreshPositionsAndDrawComponents(int mouseX, int mouseY){
 		Tessellator tessellator = Tessellator.getInstance();
 		for(Component component: components){
-	        component.draw(tessellator,guiLeft,guiTop);
+	        component.draw(tessellator);
 		}
+	}
+	
+	public int getGuiLeft(){
+		return guiLeft;
+	}
+	public int getGuiTop(){
+		return guiTop;
 	}
 }

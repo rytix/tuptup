@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import xyz.rytix.roboTuptup.gui.GuiBaseRoboTela;
 import xyz.rytix.roboTuptup.gui.components.scratch.ScratchBloco;
 import xyz.rytix.roboTuptup.gui.components.scratch.ScratchBlocoTest;
 import xyz.rytix.roboTuptup.gui.interfaces.Component;
@@ -23,42 +24,23 @@ public class ScrollPanelComponent extends Component implements RightClickDraggab
 	public int oldYMouse;
 	public int xScroll;
 	public int yScroll;
-	public boolean scrollingOnArea = false;
-
-	public final int RELATIVE_LEFT;
-	public final int RELATIVE_RIGHT;
-	public final int RELATIVE_TOP;
-	public final int RELATIVE_OPEN_GL_SCISSOR_TOP;
-	public final int RELATIVE_BOTTOM;
 	
 	public final int WIDTH;
 	public final int HEIGHT;
-	
-	public int left;
-	public int right;
-	public int top;
-	public int guiTopForDarkMagic;
-	public int openGLScissorTop;
-	public int bottom;
-	
+		
 	public final int SCROLL_WIDTH;
 	public final int SCROLL_HEIGHT;	
 	
 	List<ScratchBloco> scratchBlocos = new ArrayList(); // Vai para o robô
 	
-	public ScrollPanelComponent(int relativeLeft, int relativeTop,
-			int openGlScissorTop, int width, int height,
-			int SCROLL_WIDTH, int SCROLL_HEIGHT, int guiLeft,
-			int guiTop, Gui gui) 
+	public ScrollPanelComponent(int left, int top,
+			int width, int height,
+			int SCROLL_WIDTH, int SCROLL_HEIGHT, GuiBaseRoboTela gui) 
 	{
 		super(gui);
-		scratchBlocos.add(new ScratchBlocoTest(gui));
 		
-		this.RELATIVE_LEFT = relativeLeft;
-		this.RELATIVE_RIGHT = relativeLeft+width;
-		this.RELATIVE_TOP = relativeTop;
-		this.RELATIVE_OPEN_GL_SCISSOR_TOP = openGlScissorTop;
-		this.RELATIVE_BOTTOM = relativeTop+height;
+		this.left = left;
+		this.top = top;
 		
 		this.WIDTH = width;
 		this.HEIGHT = height;
@@ -68,53 +50,51 @@ public class ScrollPanelComponent extends Component implements RightClickDraggab
 		
 		this.xScroll = 0;
 		this.yScroll = 0;
-		this.scrollingOnArea = false;
 		
 		this.oldXMouse = 0;
 		this.oldYMouse = 0;
-		
-		refreshGuiPosition(guiLeft, guiTop);
-	}
-	
-	public void refreshGuiPosition(int guiLeft, int guiTop){
-		left = RELATIVE_LEFT + guiLeft;
-		right = RELATIVE_RIGHT + guiLeft;
-		top =  RELATIVE_TOP + guiTop;
-		openGLScissorTop = RELATIVE_OPEN_GL_SCISSOR_TOP + guiTop;
-		bottom = RELATIVE_BOTTOM + guiTop;
-		
-		guiTopForDarkMagic = guiTop;
+				
+		scratchBlocos.add(new ScratchBlocoTest(gui,SCROLL_WIDTH,SCROLL_HEIGHT,this.left,this.top));
 	}
 	
 	@Override
 	public boolean isMouseInside(int mouseX, int mouseY){
-		if(mouseX >= left && mouseX <= right && mouseY >= top && mouseY <= bottom)
+		int left = getTrueLeft();
+		int top = getTrueTop();
+		
+		if(mouseX >= left && mouseX <= left + WIDTH && mouseY >= top && mouseY <= top + WIDTH)
 			return true;
 		return false;
 	}
 	
 	@Override
-	public RightClickDraggable getDraggableComponent() {
-		return this;
-	}
-	
-	@Override
-	public void draggableInit(int mouseX, int mouseY) {
+	public void draggablePre(int mouseX, int mouseY) {
 		oldXMouse = mouseX;
 		oldYMouse = mouseY;
 	}
 	
 	@Override
 	public void draggableAction(int mouseX,int mouseY){
-		//TODO if em nenhum outro componente dentro
 		processScroll(mouseX, mouseY);
+	}
+	
+	@Override
+	public void draggablePos(int mouseX, int mouseY) {};
+	
+	@Override
+	public RightClickDraggable getDraggableObject(int mouseX, int mouseY) {
+		for(ScratchBloco sb: scratchBlocos){
+			if(sb.isMouseInside(mouseX, mouseY)){
+				sb.draggablePre(mouseX, mouseY);
+				return sb.getDraggableObject(mouseX, mouseY);
+			}
+		}
+		return this;
 	}
 	
 	//*** Funções para desenhar na tela
 	@Override
-	public void draw(Tessellator tessellator, int guiLeft, int guiTop){
-		refreshGuiPosition(guiLeft, guiTop);
-		
+	public void draw(Tessellator tessellator){
 		VertexBuffer vertexbuffer = tessellator.getBuffer();
 		
         ativarGLScissors();
@@ -124,7 +104,7 @@ public class ScrollPanelComponent extends Component implements RightClickDraggab
         ativarGLScissors();
 
 		for(ScratchBloco sb : scratchBlocos){
-			sb.draw(tessellator, left+xScroll, top+yScroll);
+			sb.draw(tessellator);
 		}
 		
 		removerLimite();
@@ -132,8 +112,8 @@ public class ScrollPanelComponent extends Component implements RightClickDraggab
 	
 	private void ativarGLScissors(){
 		int sr = new ScaledResolution(Minecraft.getMinecraft()).getScaleFactor();	
-		int scaledLeft = left * sr; 
-		int scaledTop = openGLScissorTop * sr + doDarkMagicToFixTheTop(sr);
+		int scaledLeft = getTrueLeft() * sr; 
+		int scaledTop = (124 + GUI.getGuiTop()) * sr + doDarkMagicToFixTheTop(sr);
 		int scaledWidth = WIDTH * sr;
 		int scaledHeight = HEIGHT * sr;
 		
@@ -150,6 +130,8 @@ public class ScrollPanelComponent extends Component implements RightClickDraggab
 	private int doDarkMagicToFixTheTop(int sr){
 		//XXX
 		Minecraft mc = Minecraft.getMinecraft();
+		int guiTopForDarkMagic = GUI.getGuiTop();
+		
 		if(sr == 1){
 			if(mc.displayHeight % 2 == 0){
 				return -1;
@@ -175,8 +157,8 @@ public class ScrollPanelComponent extends Component implements RightClickDraggab
 	}
 	private void drawAreaBorders(){
 		drawAreaBorders(
-				left + xScroll,
-				top + yScroll,
+				getTrueLeft() + xScroll,
+				getTrueTop() + yScroll,
 				SCROLL_WIDTH,SCROLL_HEIGHT);
 	}
 	

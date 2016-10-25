@@ -1,5 +1,6 @@
 package xyz.rytix.roboTuptup.gui.interfaces;
 
+import xyz.rytix.roboTuptup.gui.GuiBaseRoboTela;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
@@ -8,11 +9,12 @@ public abstract class Component {
 	/**
 	 * A Gui que invocou os componentes
 	 */
-	protected final Gui GUI;
+	protected final GuiBaseRoboTela GUI;
+	protected int left;
+	protected int top;
 	
 	
-	
-	public Component(Gui gui) {
+	public Component(GuiBaseRoboTela gui) {
 		super();
 		this.GUI = gui;
 	}
@@ -23,7 +25,7 @@ public abstract class Component {
 	 * @param left 
 	 * @param top
 	 */
-	public abstract void draw(Tessellator tessellator, int left, int top);
+	public abstract void draw(Tessellator tessellator);
 	/**
 	 * Utilizada para detectar colisão entre o mouse e o componente
 	 * @param mouseX
@@ -31,4 +33,12 @@ public abstract class Component {
 	 * @return verdadeiro se houve colisão, falso se não houve.
 	 */
 	public abstract boolean isMouseInside(int mouseX, int mouseY);
+	
+	public final int getTrueLeft(){
+		return left + GUI.getGuiLeft();
+	}
+	
+	public final int getTrueTop(){
+		return top + GUI.getGuiTop();
+	}
 }
