@@ -1,4 +1,4 @@
-package xyz.rytix.roboTuptup.gui.interfaces;
+package xyz.rytix.roboTuptup.gui.components;
 
 import xyz.rytix.roboTuptup.gui.GuiBaseRoboTela;
 import net.minecraft.client.gui.Gui;
@@ -10,8 +10,8 @@ public abstract class Component {
 	 * A Gui que invocou os componentes
 	 */
 	protected final GuiBaseRoboTela GUI;
-	protected int left;
-	protected int top;
+	public int left;
+	public int top;
 	
 	
 	public Component(GuiBaseRoboTela gui) {

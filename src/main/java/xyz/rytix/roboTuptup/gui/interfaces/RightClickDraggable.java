@@ -1,6 +1,6 @@
 package xyz.rytix.roboTuptup.gui.interfaces;
 
-public interface RightClickDraggable {
+public interface RightClickDraggable extends Drawable{
 	/**
 	 * Função que será chamada uma vez antes de entrar no loop de chamar a função
 	 * draggableAction.

@@ -17,8 +17,8 @@ import xyz.rytix.roboTuptup.Tuptup;
 import xyz.rytix.roboTuptup.entity.TileEntityBaseRobo;
 import xyz.rytix.roboTuptup.gui.components.scratch.ScratchBloco;
 import xyz.rytix.roboTuptup.gui.components.scratch.ScratchBlocoTest;
+import xyz.rytix.roboTuptup.gui.components.Component;
 import xyz.rytix.roboTuptup.gui.components.ScrollPanelComponent;
-import xyz.rytix.roboTuptup.gui.interfaces.Component;
 import xyz.rytix.roboTuptup.gui.interfaces.RightClickDraggable;
 import xyz.rytix.roboTuptup.helper.TheObliteratorCustomFont;
 
@@ -94,7 +94,7 @@ public class GuiBaseRoboTela extends GuiContainer {
 			holdObject.draggablePos(mouseX, mouseY);
 			holdObject = null;
 		}
-		
+		super.mouseReleased(mouseX, mouseY, state);
 	}
 	private void resolverBotaoEsquerdoSegurado(int mouseX,int mouseY){
 		if(Mouse.isButtonDown(0) && holdObject == null){
@@ -114,6 +114,9 @@ public class GuiBaseRoboTela extends GuiContainer {
 		Tessellator tessellator = Tessellator.getInstance();
 		for(Component component: components){
 	        component.draw(tessellator);
+		}
+		if(holdObject != null){
+			holdObject.draw(tessellator);
 		}
 	}
 	

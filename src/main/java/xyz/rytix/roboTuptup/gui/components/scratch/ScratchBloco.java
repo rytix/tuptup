@@ -3,14 +3,19 @@ package xyz.rytix.roboTuptup.gui.components.scratch;
 import java.util.List;
 import java.util.Stack;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
 import xyz.rytix.roboTuptup.gui.GuiBaseRoboTela;
+import xyz.rytix.roboTuptup.gui.components.Component;
 import xyz.rytix.roboTuptup.gui.components.ScrollPanelComponent;
-import xyz.rytix.roboTuptup.gui.interfaces.Component;
 import xyz.rytix.roboTuptup.gui.interfaces.RightClickDraggable;
+import xyz.rytix.roboTuptup.gui.interfaces.ScratchDrawable;
+import xyz.rytix.roboTuptup.helper.TheObliteratorCustomFont;
 
-public abstract class ScratchBloco extends Component implements RightClickDraggable{
+public abstract class ScratchBloco extends Component implements RightClickDraggable, ScratchDrawable{
 	protected final boolean podePorBlocosAposInstrucao; // A instrução aceita blocos após ela (não é uma instrução final)
 	protected final boolean podePorBlocosDentroInstrucao; // A instrução aceita blocos dentro dela, como por exemplo o "while"
 	protected final boolean podePorBlocosAntesInstrucao; // A instrução aceita blocos antes da instrução
@@ -19,7 +24,7 @@ public abstract class ScratchBloco extends Component implements RightClickDragga
 	protected ScratchBloco pai; // Bloco anterior a este
 	
 	protected final Class[] blocosNaAssinaturaAceitaveis; // Assinatura é a parte aonde possui textos e aceita sub blocos
-	protected final Object[] blocosNaAssinatura; // Blocos que estão na assinatura
+	protected ScratchBloco[] blocosNaAssinatura; // Blocos que estão na assinatura
 	
 	protected ScratchBloco proximoBlocoDentro; // Caso aceite blocos dentro da instrução, este é o próximo bloco dentro da instrução
 	protected ScratchBloco proximoBlocoInterno; // Caso seja uma instrução complexa como um se senão, é o proximo bloco (senão)
@@ -27,15 +32,13 @@ public abstract class ScratchBloco extends Component implements RightClickDragga
 		
 	private int oldMouseX = 0;
 	private int oldMouseY = 0;
-	private int panelWidth;
-	private int panelHeight;
 	
 	public ScratchBloco(boolean podePorBlocosAposInstrucao, 
 			boolean podePorBlocosDentroInstrucao,
 			boolean podePorBlocosAntesInstrucao,
 			boolean ehUmBlocoExemplo,
-			Class[] blocosNaAssinaturaAceitaveis, GuiBaseRoboTela gui,
-			int panelWidth, int panelHeight,
+			Class[] blocosNaAssinaturaAceitaveis, 
+			GuiBaseRoboTela gui,
 			int left, int top) {
 		super(gui);
 		this.left = left;
@@ -45,22 +48,81 @@ public abstract class ScratchBloco extends Component implements RightClickDragga
 		this.podePorBlocosAntesInstrucao = podePorBlocosAntesInstrucao;
 		this.ehUmBlocoExemplo = ehUmBlocoExemplo;
 		this.blocosNaAssinaturaAceitaveis = blocosNaAssinaturaAceitaveis;
-		this.panelWidth = panelWidth;
-		this.panelHeight = panelHeight;
 		if(blocosNaAssinaturaAceitaveis == null){
 			this.blocosNaAssinatura = null;
 		}else{
-			this.blocosNaAssinatura = new Object[blocosNaAssinaturaAceitaveis.length];
+			this.blocosNaAssinatura = new ScratchBloco[blocosNaAssinaturaAceitaveis.length];
 		}
 	}	
 	
 	public abstract void action();
 	
 	@Override
+	public void draw(Tessellator tessellator) {
+		VertexBuffer vertexBuffer = tessellator.getBuffer();
+	    int left = getTrueLeft();
+	    int top = getTrueTop();
+	    
+		GlStateManager.pushMatrix();
+	    GlStateManager.pushAttrib();
+        GlStateManager.disableTexture2D();
+        
+		DrawHelper.drawInstructionScratchBlock(tessellator, left, top, getScratchThingWidth(), getScratchThingHeight(), podePorBlocosAntesInstrucao, podePorBlocosAposInstrucao);
+		int leftBlocos = left;
+		for(ScratchBloco bloco: blocosNaAssinatura){
+			bloco.changeLeftTop(left, top);
+			bloco.draw(tessellator);
+			left += bloco.getScratchThingWidth();
+		}
+		
+        GlStateManager.popAttrib();
+        GlStateManager.popMatrix();		
+	}
+	
+	public void changeLeftTop(int left, int top){
+		this.left = left;
+		this.top = top;
+	}
+	
+	@Override
+	public int getScratchThingHeight() {
+		int height = 0;
+		int lenght = blocosNaAssinatura.length;
+		for(ScratchDrawable d : blocosNaAssinatura){
+			int sth = d.getScratchThingHeight();
+			if(height < sth){
+				height=sth;
+			}
+		}
+		height += DrawHelper.TOP_BOTTOM_SPACE_BLOCK*2;
+		return height;
+	}
+	
+	@Override
+	public int getScratchThingWidth() {
+		int width = 0;
+		int lenght = blocosNaAssinatura.length;
+		for(ScratchDrawable d : blocosNaAssinatura){
+			width+=d.getScratchThingWidth();
+		}
+		width += DrawHelper.LEFT_RIGHT_SPACE_BLOCK*2;
+		return width;
+	}
+	
+	@Override
+	public boolean isMouseInside(int mouseX, int mouseY) {
+		if(mouseX > getTrueLeft() && mouseX < getTrueLeft() + getScratchThingWidth()){
+			if(mouseY > getTrueTop() && mouseY < getTrueTop() + getScratchThingHeight()){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	@Override
 	public void draggablePre(int mouseX, int mouseY) {
 		oldMouseX = mouseX;
 		oldMouseY = mouseY;
-		
 	}
 	
 	@Override
@@ -77,5 +139,20 @@ public abstract class ScratchBloco extends Component implements RightClickDragga
 	}
 	public boolean isPodePorBlocosAntesInstrucao() {
 		return podePorBlocosAntesInstrucao;
+	}
+	
+	public boolean addBlocoNaAssinatura(ScratchBloco bloco){
+		int lenght = blocosNaAssinatura.length;
+		
+		for(int i = 0; i < lenght; i++){
+			Class classeEsperada = blocosNaAssinaturaAceitaveis[i];
+			
+			if(blocosNaAssinatura[i] == null && bloco.getClass().isAssignableFrom(classeEsperada))
+			{
+				blocosNaAssinatura[i] = bloco;
+				return true;
+			}
+		}
+		return false;
 	}
 }

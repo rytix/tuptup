@@ -22,6 +22,7 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 
 /**
@@ -166,32 +167,32 @@ public class TheObliteratorCustomFont {
          * @param color The color of the non-shadowed text (Hex)
          */
         public void drawString(Gui gui, String text, int x, int y, int color)
-        {
-                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-                GL11.glEnable(3553 /*GL_TEXTURE_2D*/);
-                GL11.glBindTexture(3553 /*GL_TEXTURE_2D*/, texID);
-                float red = (float)(color >> 16 & 0xff) / 255F;
-                float green = (float)(color >> 8 & 0xff) / 255F;
-                float blue = (float)(color & 0xff) / 255F;
-                float alpha = (float)(color >> 24 & 0xff) / 255F;
-                GL11.glColor4f(red, green, blue, alpha);
+        {        	
+        	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        	GL11.glEnable(3553 /*GL_TEXTURE_2D*/);
+        	GL11.glBindTexture(3553 /*GL_TEXTURE_2D*/, texID);
+            float red = (float)(color >> 16 & 0xff) / 255F;
+            float green = (float)(color >> 8 & 0xff) / 255F;
+            float blue = (float)(color & 0xff) / 255F;
+            float alpha = (float)(color >> 24 & 0xff) / 255F;
+            GL11.glColor4f(red, green, blue, alpha);
             int startX = x;
             for (int i=0; i<text.length(); i++)
             {
-                    char c = text.charAt(i);
-                    if (c == '\\')
-                    {
-                            char type = text.charAt(i+1);
-                            if (type == 'n')
-                            {
-                                    y += metrics.getAscent() + 2;
-                                    x = startX;
-                            }
-                            i++;
-                            continue;
-                    }
-                    drawChar(gui, c, x, y);
-                    x += metrics.getStringBounds(""+c, null).getWidth();
+                char c = text.charAt(i);
+                if (c == '\\')
+                {
+                        char type = text.charAt(i+1);
+                        if (type == 'n')
+                        {
+                                y += metrics.getAscent() + 2;
+                                x = startX;
+                        }
+                        i++;
+                        continue;
+                }
+                drawChar(gui, c, x, y);
+                x += metrics.getStringBounds(""+c, null).getWidth();
             }
         }
         
