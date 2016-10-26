@@ -97,6 +97,38 @@ public abstract class ScratchBloco extends Component implements RightClickDragga
 		height += DrawHelper.TOP_BOTTOM_SPACE_BLOCK*2;
 		return height;
 	}
+	@Override
+	public void floatingBeforeDrop(RightClickDraggable component, int mouseX, int mouseY) {
+		if(!(component instanceof ScratchBloco)){
+			return;
+		}
+		ScratchBloco scratchComponent = (ScratchBloco) component;
+		
+		if(isOnAposInstrucao(scratchComponent, mouseX, mouseY)){
+			System.out.println("AAA");
+		}
+		
+	}
+	
+	@Override
+	public void drop(RightClickDraggable component, int mouseX, int mouseY) {
+		if(!(component instanceof ScratchBloco)){
+			return;
+		}
+		ScratchBloco scratchComponent = (ScratchBloco) component;
+		
+	}
+	
+	public boolean isOnAposInstrucao (ScratchBloco sb, int mouseX,int mouseY){
+		if(!podePorBlocosAposInstrucao || !sb.podePorBlocosAntesInstrucao)
+			return false;
+		if(mouseX > left + DrawHelper.LEFT_CONNECTOR && mouseX < left + DrawHelper.LEFT_CONNECTOR + DrawHelper.WIDTH_RECT_CONNECTOR + DrawHelper.WIDTH_TRIANGLE_CONNECTOR*2){
+			if(mouseY > top - DrawHelper.HEIGHT_CONNECTOR && mouseY < top){
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	@Override
 	public int getScratchThingWidth() {

@@ -23,4 +23,6 @@ public interface RightClickDraggable extends Drawable{
 	public void draggablePos(int mouseX, int mouseY);
 	
 	public RightClickDraggable getDraggableObject(int mouseX, int mouseY);
+	public void floatingBeforeDrop(RightClickDraggable component, int mouseX, int mouseY);
+	public void drop(RightClickDraggable component,int mouseX, int mouseY);
 }

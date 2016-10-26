@@ -207,4 +207,29 @@ public class ScrollPanelComponent extends Component implements RightClickDraggab
 		this.oldXMouse = x;
 		this.oldYMouse = y;
 	}
+
+	@Override
+	public void drop(RightClickDraggable rcd, int mouseX, int mouseY) {
+		for(Component comp :scratchBlocos){
+			if(comp instanceof RightClickDraggable && isMouseInside(mouseX, mouseY)){
+				((RightClickDraggable)comp).drop(rcd, mouseX, mouseY);
+				return;
+			}
+		}
+		if(rcd instanceof Component)
+			scratchBlocos.add((Component)rcd);
+	}
+
+	@Override
+	public void floatingBeforeDrop(RightClickDraggable component, int mouseX,
+			int mouseY) {
+		if(isMouseInside(mouseX, mouseY)){
+			for(Component comp :scratchBlocos){
+				if(comp instanceof RightClickDraggable){
+					((RightClickDraggable)comp).floatingBeforeDrop(component, mouseX, mouseY);
+					return;
+				}
+			}
+		}
+	}
 }

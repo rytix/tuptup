@@ -91,6 +91,12 @@ public class GuiBaseRoboTela extends GuiContainer {
 	@Override
 	protected void mouseReleased(int mouseX, int mouseY, int state) {
 		if(holdObject != null){
+			for(Component c: components){
+				if(c instanceof RightClickDraggable){
+					RightClickDraggable cDrag = (RightClickDraggable) c;
+					cDrag.drop(holdObject, mouseX, mouseY);
+				}
+			}
 			holdObject.draggablePos(mouseX, mouseY);
 			holdObject = null;
 		}
@@ -107,6 +113,9 @@ public class GuiBaseRoboTela extends GuiContainer {
 			}
 		}else if(holdObject != null){
 			holdObject.draggableAction(mouseX, mouseY);
+			for(Component component: components){
+				((RightClickDraggable)component).floatingBeforeDrop(holdObject,mouseX, mouseY);
+			}
 		}
 	}
 		
