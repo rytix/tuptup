@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import xyz.rytix.roboTuptup.gui.GuiBaseRoboTela;
 import xyz.rytix.roboTuptup.gui.components.scratch.ScratchBloco;
 import xyz.rytix.roboTuptup.gui.components.scratch.ScratchBlocoTest;
+import xyz.rytix.roboTuptup.gui.interfaces.IComponent;
 import xyz.rytix.roboTuptup.gui.interfaces.RightClickDraggable;
 
 public class ScrollPanelComponent extends Component implements RightClickDraggable{
@@ -30,7 +31,7 @@ public class ScrollPanelComponent extends Component implements RightClickDraggab
 	public final int SCROLL_WIDTH;
 	public final int SCROLL_HEIGHT;	
 	
-	List<Component> scratchBlocos = new ArrayList(); // Vai para o robô
+	List<IComponent> components = new ArrayList(); // Vai para o robô
 	
 	public ScrollPanelComponent(int left, int top,
 			int width, int height,
@@ -38,8 +39,8 @@ public class ScrollPanelComponent extends Component implements RightClickDraggab
 	{
 		super(gui);
 		
-		this.left = left;
-		this.top = top;
+		setLeft(left);
+		setTop(top);
 		
 		this.WIDTH = width;
 		this.HEIGHT = height;
@@ -52,9 +53,12 @@ public class ScrollPanelComponent extends Component implements RightClickDraggab
 		
 		this.oldXMouse = 0;
 		this.oldYMouse = 0;
-				
-		scratchBlocos.add(new ScratchBlocoTest(gui,this.left,this.top));
-		scratchBlocos.add(new ScratchBlocoTest(gui,this.left,this.top+20));
+		
+		components.add(new ScratchBlocoTest(gui,getLeft(),getTop(),"Inicio",false));	
+		components.add(new ScratchBlocoTest(gui,getLeft(),getTop(),"Frente",true));
+		components.add(new ScratchBlocoTest(gui,getLeft(),getTop()+20,"Tras",true));
+		components.add(new ScratchBlocoTest(gui,getLeft(),getTop()+20,"Direita",true));
+		components.add(new ScratchBlocoTest(gui,getLeft(),getTop()+20,"Esquerda",true));
 	}
 	
 	@Override
@@ -75,7 +79,32 @@ public class ScrollPanelComponent extends Component implements RightClickDraggab
 	
 	@Override
 	public void draggableAction(int mouseX,int mouseY){
-		processScroll(mouseX, mouseY);
+		int xScrollDiff = (mouseX - this.oldXMouse)*2;
+		int yScrollDiff = (mouseY - this.oldYMouse)*2;
+		
+		int prevXScroll = xScroll + xScrollDiff;
+		int prevYScroll = yScroll + yScrollDiff;
+		if(prevXScroll > 0){
+			xScrollDiff = 0;
+		}else if(prevXScroll < -SCROLL_WIDTH + WIDTH){
+			xScrollDiff = 0;
+		}
+		if(prevYScroll > 0){
+			yScrollDiff = 0;
+		}else if(prevYScroll < -SCROLL_HEIGHT + HEIGHT){
+			yScrollDiff = 0;
+		}
+		
+		this.xScroll += xScrollDiff;
+		this.yScroll += yScrollDiff;
+		
+		for(IComponent component: components){
+			component.setLeft(component.getLeft() + xScrollDiff);
+			component.setTop(component.getTop() + yScrollDiff);
+		}
+		
+		this.oldXMouse = mouseX;
+		this.oldYMouse = mouseY;
 	}
 	
 	@Override
@@ -83,15 +112,24 @@ public class ScrollPanelComponent extends Component implements RightClickDraggab
 	
 	@Override
 	public RightClickDraggable getDraggableObject(int mouseX, int mouseY) {
-		for(Component sb: scratchBlocos){
+		for(IComponent sb: components){
 			if(sb instanceof RightClickDraggable){
 				RightClickDraggable sbrcd = (RightClickDraggable) sb;
 				if(sb.isMouseInside(mouseX, mouseY)){
 					sbrcd = sbrcd.getDraggableObject(mouseX, mouseY);
 					sbrcd.draggablePre(mouseX, mouseY);
-					scratchBlocos.remove(sbrcd);
+					components.remove(sbrcd);
 					return sbrcd;
 				}
+			}
+		}
+		return this;
+	}
+	
+	public IComponent getComponentOn(int mouseX, int mouseY){
+		for(IComponent component: components){
+			if(component.isMouseInside(mouseX, mouseY)){
+				return component.getComponentOn(mouseX, mouseY);
 			}
 		}
 		return this;
@@ -108,7 +146,7 @@ public class ScrollPanelComponent extends Component implements RightClickDraggab
 		
         ativarGLScissors();
 
-		for(Component sb : scratchBlocos){
+		for(IComponent sb : components){
 			sb.draw(tessellator);
 		}
 		
@@ -160,6 +198,7 @@ public class ScrollPanelComponent extends Component implements RightClickDraggab
 			return 0;
 		}
 	}
+	
 	private void drawAreaBorders(){
 		drawAreaBorders(
 				getTrueLeft() + xScroll,
@@ -178,58 +217,10 @@ public class ScrollPanelComponent extends Component implements RightClickDraggab
 		Gui.drawRect(x+width-grossura, y, x+width, y+height, 0xFF990000);
 		Gui.drawRect(x, y+height-grossura, x+width, y+height, 0xFF990000);
 	}
+	
 	//***Fim funções desenhar na tela
-	public void processScroll(int x,int y){
-		int xScrollDiff = (x - this.oldXMouse)*2;
-		int yScrollDiff = (y - this.oldYMouse)*2;
-		
-		int prevXScroll = xScroll + xScrollDiff;
-		int prevYScroll = yScroll + yScrollDiff;
-		if(prevXScroll > 0){
-			xScrollDiff = 0;
-		}else if(prevXScroll < -SCROLL_WIDTH + WIDTH){
-			xScrollDiff = 0;
-		}
-		if(prevYScroll > 0){
-			yScrollDiff = 0;
-		}else if(prevYScroll < -SCROLL_HEIGHT + HEIGHT){
-			yScrollDiff = 0;
-		}
-		
-		this.xScroll += xScrollDiff;
-		this.yScroll += yScrollDiff;
-		
-		for(Component component: scratchBlocos){
-			component.left += xScrollDiff;
-			component.top += yScrollDiff;
-		}
-		
-		this.oldXMouse = x;
-		this.oldYMouse = y;
-	}
-
-	@Override
-	public void drop(RightClickDraggable rcd, int mouseX, int mouseY) {
-		for(Component comp :scratchBlocos){
-			if(comp instanceof RightClickDraggable && isMouseInside(mouseX, mouseY)){
-				((RightClickDraggable)comp).drop(rcd, mouseX, mouseY);
-				return;
-			}
-		}
-		if(rcd instanceof Component)
-			scratchBlocos.add((Component)rcd);
-	}
-
-	@Override
-	public void floatingBeforeDrop(RightClickDraggable component, int mouseX,
-			int mouseY) {
-		if(isMouseInside(mouseX, mouseY)){
-			for(Component comp :scratchBlocos){
-				if(comp instanceof RightClickDraggable){
-					((RightClickDraggable)comp).floatingBeforeDrop(component, mouseX, mouseY);
-					return;
-				}
-			}
-		}
+	
+	public void addComponent(IComponent component){
+		components.add(component);
 	}
 }

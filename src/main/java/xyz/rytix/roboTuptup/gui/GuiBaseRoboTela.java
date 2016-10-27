@@ -11,7 +11,6 @@ import javax.swing.JOptionPane;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
-import sun.java2d.loops.DrawRect;
 import xyz.rytix.roboTuptup.Config;
 import xyz.rytix.roboTuptup.Tuptup;
 import xyz.rytix.roboTuptup.entity.TileEntityBaseRobo;
@@ -19,10 +18,9 @@ import xyz.rytix.roboTuptup.gui.components.scratch.ScratchBloco;
 import xyz.rytix.roboTuptup.gui.components.scratch.ScratchBlocoTest;
 import xyz.rytix.roboTuptup.gui.components.Component;
 import xyz.rytix.roboTuptup.gui.components.ScrollPanelComponent;
+import xyz.rytix.roboTuptup.gui.interfaces.IComponent;
 import xyz.rytix.roboTuptup.gui.interfaces.RightClickDraggable;
 import xyz.rytix.roboTuptup.helper.TheObliteratorCustomFont;
-
-import com.sun.prism.paint.Color;
 
 import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
@@ -42,7 +40,7 @@ public class GuiBaseRoboTela extends GuiContainer {
 
 	public static RightClickDraggable holdObject = null;
 	
-	List<Component> components;
+	List<IComponent> components;
 	
 
 	public GuiBaseRoboTela(IInventory playerInv,
@@ -57,19 +55,6 @@ public class GuiBaseRoboTela extends GuiContainer {
 		components.add(new ScrollPanelComponent(18,1,84,118,500,500,this));
 	}
 
-	@Override
-	public void initGui() {
-		// this.buttonList.add(this.act = new GuiButton(0, this.width/2 -100,
-		// this.height/2 - 24, "Button A"));
-		super.initGui();
-	}
-	
-	@Override
-	protected void actionPerformed(GuiButton button) throws IOException {
-
-		super.actionPerformed(button);
-	}
-
 	//Função de desenho principal A.K.A Main
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks,
@@ -79,9 +64,7 @@ public class GuiBaseRoboTela extends GuiContainer {
 				"textures/gui/baseRobo.png"));
 		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 		
-		
-		this.resolverBotaoEsquerdoSegurado(mouseX,mouseY);
-		this.refreshPositionsAndDrawComponents(mouseX, mouseY);
+		this.drawComponents(mouseX, mouseY);
 	}
 	
 	@Override
@@ -91,20 +74,16 @@ public class GuiBaseRoboTela extends GuiContainer {
 	@Override
 	protected void mouseReleased(int mouseX, int mouseY, int state) {
 		if(holdObject != null){
-			for(Component c: components){
-				if(c instanceof RightClickDraggable){
-					RightClickDraggable cDrag = (RightClickDraggable) c;
-					cDrag.drop(holdObject, mouseX, mouseY);
-				}
-			}
 			holdObject.draggablePos(mouseX, mouseY);
 			holdObject = null;
 		}
 		super.mouseReleased(mouseX, mouseY, state);
 	}
-	private void resolverBotaoEsquerdoSegurado(int mouseX,int mouseY){
+	
+	@Override
+	protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
 		if(Mouse.isButtonDown(0) && holdObject == null){
-			for(Component component: components){
+			for(IComponent component: components){
 				if(component.isMouseInside(mouseX, mouseY) && 
 						component instanceof RightClickDraggable){
 					holdObject = ((RightClickDraggable)component).getDraggableObject(mouseX, mouseY);
@@ -113,15 +92,23 @@ public class GuiBaseRoboTela extends GuiContainer {
 			}
 		}else if(holdObject != null){
 			holdObject.draggableAction(mouseX, mouseY);
-			for(Component component: components){
-				((RightClickDraggable)component).floatingBeforeDrop(holdObject,mouseX, mouseY);
+		}
+		
+		super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+	}
+	
+	public IComponent getComponentOn(int mouseX, int mouseY){
+		for(IComponent component: components){
+			if(component.isMouseInside(mouseX, mouseY)){
+				return component.getComponentOn(mouseX, mouseY);
 			}
 		}
+		return null;
 	}
 		
-	private void refreshPositionsAndDrawComponents(int mouseX, int mouseY){
+	private void drawComponents(int mouseX, int mouseY){
 		Tessellator tessellator = Tessellator.getInstance();
-		for(Component component: components){
+		for(IComponent component: components){
 	        component.draw(tessellator);
 		}
 		if(holdObject != null){
@@ -129,9 +116,11 @@ public class GuiBaseRoboTela extends GuiContainer {
 		}
 	}
 	
+	
 	public int getGuiLeft(){
 		return guiLeft;
 	}
+	
 	public int getGuiTop(){
 		return guiTop;
 	}

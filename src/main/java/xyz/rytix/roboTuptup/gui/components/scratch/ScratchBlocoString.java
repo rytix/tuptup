@@ -5,10 +5,9 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.Tessellator;
 import xyz.rytix.roboTuptup.gui.GuiBaseRoboTela;
 import xyz.rytix.roboTuptup.gui.interfaces.RightClickDraggable;
-import xyz.rytix.roboTuptup.gui.interfaces.ScratchDrawable;
 import xyz.rytix.roboTuptup.helper.TheObliteratorCustomFont;
 
-public class ScratchBlocoString extends ScratchBloco implements ScratchDrawable{
+public class ScratchBlocoString extends ScratchBloco{
 	private final String STRING;
     private final TheObliteratorCustomFont cf;
 
@@ -23,16 +22,16 @@ public class ScratchBlocoString extends ScratchBloco implements ScratchDrawable{
 	
 	@Override
 	public void draw(Tessellator t) {
-		cf.drawString(GUI, STRING, left+LEFT_RIGHT_SPACE, top+TOP_BOTTOM_SPACE, 0xFFECF0F1);
+		cf.drawString(GUI, STRING, getTrueLeft()+LEFT_RIGHT_SPACE, getTrueTop()+TOP_BOTTOM_SPACE, 0xFFECF0F1);
 	}
 
 	@Override
-	public int getScratchThingWidth() {
+	public int getWidth() {
 		return cf.getStringWidth(STRING) + LEFT_RIGHT_SPACE*2;
 	}
 
 	@Override
-	public int getScratchThingHeight() {
+	public int getHeight() {
 		return cf.getStringHeight(STRING) + TOP_BOTTOM_SPACE*2;
 	}
 

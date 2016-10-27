@@ -1,6 +1,6 @@
 package xyz.rytix.roboTuptup.gui.interfaces;
 
-public interface RightClickDraggable extends Drawable{
+public interface RightClickDraggable extends IComponent{
 	/**
 	 * Função que será chamada uma vez antes de entrar no loop de chamar a função
 	 * draggableAction.
@@ -23,6 +23,4 @@ public interface RightClickDraggable extends Drawable{
 	public void draggablePos(int mouseX, int mouseY);
 	
 	public RightClickDraggable getDraggableObject(int mouseX, int mouseY);
-	public void floatingBeforeDrop(RightClickDraggable component, int mouseX, int mouseY);
-	public void drop(RightClickDraggable component,int mouseX, int mouseY);
 }

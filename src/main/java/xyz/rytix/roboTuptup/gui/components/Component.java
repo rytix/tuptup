@@ -1,18 +1,20 @@
 package xyz.rytix.roboTuptup.gui.components;
 
 import xyz.rytix.roboTuptup.gui.GuiBaseRoboTela;
+import xyz.rytix.roboTuptup.gui.interfaces.IComponent;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 
-public abstract class Component {
+public abstract class Component implements IComponent{
 	/**
 	 * A Gui que invocou os componentes
 	 */
 	protected final GuiBaseRoboTela GUI;
-	public int left;
-	public int top;
-	
+	private int left;
+	private int top;
+	public int width;
+	public int height;
 	
 	public Component(GuiBaseRoboTela gui) {
 		super();
@@ -34,11 +36,42 @@ public abstract class Component {
 	 */
 	public abstract boolean isMouseInside(int mouseX, int mouseY);
 	
+	@Override
+	public int getLeft() {
+		return left;
+	}
+	
+	@Override
+	public int getTop() {
+		return top;
+	}
+	
+	@Override
+	public int getWidth(){
+		return width;
+	}
+	
+	@Override
+	public int getHeight(){
+		return height;
+	}
+	
+	@Override
 	public final int getTrueLeft(){
 		return left + GUI.getGuiLeft();
 	}
 	
+	@Override
 	public final int getTrueTop(){
 		return top + GUI.getGuiTop();
 	}
+	
+	public void setLeft(int left) {
+		this.left = left;
+	}
+	
+	public void setTop(int top) {
+		this.top = top;
+	}
+	
 }

@@ -3,8 +3,6 @@ package xyz.rytix.roboTuptup.itemBlock;
 import xyz.rytix.roboTuptup.Config;
 import xyz.rytix.roboTuptup.helper.Initializer;
 
-import com.sun.org.apache.xml.internal.security.encryption.Reference;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;

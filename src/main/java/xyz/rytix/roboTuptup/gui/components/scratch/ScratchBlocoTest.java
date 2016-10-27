@@ -8,7 +8,6 @@ import org.lwjgl.opengl.GL11;
 
 import xyz.rytix.roboTuptup.gui.GuiBaseRoboTela;
 import xyz.rytix.roboTuptup.gui.interfaces.RightClickDraggable;
-import xyz.rytix.roboTuptup.gui.interfaces.ScratchDrawable;
 import xyz.rytix.roboTuptup.helper.TheObliteratorCustomFont;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -21,11 +20,9 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 public class ScratchBlocoTest extends ScratchBloco{
 
 
-	public ScratchBlocoTest(GuiBaseRoboTela gui, int left,int top) {
-		super(true, false, false, false, new Class[]{ScratchBlocoString.class,ScratchBlocoString.class}, gui, left,top);
-		addBlocoNaAssinatura(new ScratchBlocoString(gui, "Inicio", left, top));
-		addBlocoNaAssinatura(new ScratchBlocoString(gui, "Inicioso", left, top));
-
+	public ScratchBlocoTest(GuiBaseRoboTela gui, int left,int top, String texto, boolean antes) {
+		super(true, false, antes, false, new Class[]{ScratchBlocoString.class}, gui, left,top);
+		addBlocoNaAssinatura(new ScratchBlocoString(gui, texto, left, top),0);
 	}
 	
 	@Override
@@ -38,9 +35,6 @@ public class ScratchBlocoTest extends ScratchBloco{
 		// TODO Auto-generated method stub
 		
 	}
-
-	@Override
-	public void draggablePos(int mouseX, int mouseY) {}
 	
 	@Override
 	public RightClickDraggable getDraggableObject(int mouseX, int mouseY) {
