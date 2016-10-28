@@ -54,8 +54,7 @@ public class BlockBaseRobo extends Block implements ITileEntityProvider{
 //        }
 		
 		TileEntityBaseRobo tileEntity = (TileEntityBaseRobo)worldIn.getTileEntity(pos);
-		playerIn.openGui(Tuptup.instance, TuptupGuiHandler.BASE_GUI, worldIn, pos.getX(), pos.getY(), pos.getZ());
-		//tileEntity.onBlockActivated(pos);
+		tileEntity.onBlockActivated(playerIn, worldIn, pos);
 		// TODO Auto-generated method stub
 		return true;
 	}

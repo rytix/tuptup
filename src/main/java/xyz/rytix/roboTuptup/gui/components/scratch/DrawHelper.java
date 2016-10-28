@@ -1,3 +1,4 @@
+
 package xyz.rytix.roboTuptup.gui.components.scratch;
 
 import org.lwjgl.opengl.GL11;
@@ -48,7 +49,7 @@ public class DrawHelper {
 		contentHeight += TOP_BOTTOM_SPACE_BLOCK*2 + HEIGHT_CONNECTOR;
 		VertexBuffer vb = t.getBuffer();
 				
-		GL11.glColor4f(179/255.0F, 58/255.0F, 182/255.0F, 1.0F);
+		GL11.glColor4f(0/255.0F, 153/255.0F, 182/255.0F, 1.0F);
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		
 		vb.begin(GL11.GL_QUAD_STRIP, DefaultVertexFormats.POSITION);

@@ -1,4 +1,4 @@
-package xyz.rytix.roboTuptup.gui.components.scratch;
+package xyz.rytix.roboTuptup.gui.components.scratch.actionBlocks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +7,8 @@ import java.util.Stack;
 import org.lwjgl.opengl.GL11;
 
 import xyz.rytix.roboTuptup.gui.GuiBaseRoboTela;
+import xyz.rytix.roboTuptup.gui.components.scratch.core.ScratchBloco;
+import xyz.rytix.roboTuptup.gui.components.scratch.core.ScratchBlocoString;
 import xyz.rytix.roboTuptup.gui.interfaces.RightClickDraggable;
 import xyz.rytix.roboTuptup.helper.TheObliteratorCustomFont;
 import net.minecraft.client.Minecraft;
@@ -17,11 +19,10 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
-public class ScratchBlocoTest extends ScratchBloco{
+public abstract class ScratchBlocoAction extends ScratchBloco{
 
-
-	public ScratchBlocoTest(GuiBaseRoboTela gui, int left,int top, String texto, boolean antes) {
-		super(true, false, antes, false, new Class[]{ScratchBlocoString.class}, gui, left,top);
+	public ScratchBlocoAction(GuiBaseRoboTela gui, int left, int top, String texto, boolean exemplo) {
+		super(true, false, true, exemplo, new Class[]{ScratchBlocoString.class}, gui, left,top);
 		addBlocoNaAssinatura(new ScratchBlocoString(gui, texto, left, top),0);
 	}
 	
@@ -29,16 +30,4 @@ public class ScratchBlocoTest extends ScratchBloco{
 	public void draw(Tessellator tessellator) {
 		super.draw(tessellator);
 	}
-	
-	@Override
-	public void action() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
-	public RightClickDraggable getDraggableObject(int mouseX, int mouseY) {
-		return this;
-	}
-
 }

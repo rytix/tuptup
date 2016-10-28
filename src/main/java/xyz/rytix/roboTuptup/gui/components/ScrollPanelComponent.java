@@ -14,8 +14,9 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import xyz.rytix.roboTuptup.gui.GuiBaseRoboTela;
-import xyz.rytix.roboTuptup.gui.components.scratch.ScratchBloco;
-import xyz.rytix.roboTuptup.gui.components.scratch.ScratchBlocoTest;
+import xyz.rytix.roboTuptup.gui.components.scratch.actionBlocks.ScratchBlocoAction;
+import xyz.rytix.roboTuptup.gui.components.scratch.actionBlocks.ScratchBlocoAndarFrente;
+import xyz.rytix.roboTuptup.gui.components.scratch.core.ScratchBloco;
 import xyz.rytix.roboTuptup.gui.interfaces.IComponent;
 import xyz.rytix.roboTuptup.gui.interfaces.RightClickDraggable;
 
@@ -31,7 +32,7 @@ public class ScrollPanelComponent extends Component implements RightClickDraggab
 	public final int SCROLL_WIDTH;
 	public final int SCROLL_HEIGHT;	
 	
-	List<IComponent> components = new ArrayList(); // Vai para o robô
+	public List<IComponent> components = new ArrayList(); // Vai para o robô
 	
 	public ScrollPanelComponent(int left, int top,
 			int width, int height,
@@ -53,12 +54,6 @@ public class ScrollPanelComponent extends Component implements RightClickDraggab
 		
 		this.oldXMouse = 0;
 		this.oldYMouse = 0;
-		
-		components.add(new ScratchBlocoTest(gui,getLeft(),getTop(),"Inicio",false));	
-		components.add(new ScratchBlocoTest(gui,getLeft(),getTop(),"Frente",true));
-		components.add(new ScratchBlocoTest(gui,getLeft(),getTop()+20,"Tras",true));
-		components.add(new ScratchBlocoTest(gui,getLeft(),getTop()+20,"Direita",true));
-		components.add(new ScratchBlocoTest(gui,getLeft(),getTop()+20,"Esquerda",true));
 	}
 	
 	@Override
@@ -156,7 +151,7 @@ public class ScrollPanelComponent extends Component implements RightClickDraggab
 	private void ativarGLScissors(){
 		int sr = new ScaledResolution(Minecraft.getMinecraft()).getScaleFactor();	
 		int scaledLeft = getTrueLeft() * sr; 
-		int scaledTop = (124 + GUI.getGuiTop()) * sr + doDarkMagicToFixTheTop(sr);
+		int scaledTop = (124 + gui.getGuiTop()) * sr + doDarkMagicToFixTheTop(sr);
 		int scaledWidth = WIDTH * sr;
 		int scaledHeight = HEIGHT * sr;
 		
@@ -173,7 +168,7 @@ public class ScrollPanelComponent extends Component implements RightClickDraggab
 	private int doDarkMagicToFixTheTop(int sr){
 		//XXX
 		Minecraft mc = Minecraft.getMinecraft();
-		int guiTopForDarkMagic = GUI.getGuiTop();
+		int guiTopForDarkMagic = gui.getGuiTop();
 		
 		if(sr == 1){
 			if(mc.displayHeight % 2 == 0){

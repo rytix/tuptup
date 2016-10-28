@@ -1,4 +1,4 @@
-package xyz.rytix.roboTuptup.gui.components.scratch;
+package xyz.rytix.roboTuptup.gui.components.scratch.core;
 
 import java.util.List;
 import java.util.Stack;
@@ -8,9 +8,11 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
+import xyz.rytix.roboTuptup.entity.TileEntityBaseRobo;
 import xyz.rytix.roboTuptup.gui.GuiBaseRoboTela;
 import xyz.rytix.roboTuptup.gui.components.Component;
 import xyz.rytix.roboTuptup.gui.components.ScrollPanelComponent;
+import xyz.rytix.roboTuptup.gui.components.scratch.DrawHelper;
 import xyz.rytix.roboTuptup.gui.interfaces.IComponent;
 import xyz.rytix.roboTuptup.gui.interfaces.RightClickDraggable;
 import xyz.rytix.roboTuptup.helper.TheObliteratorCustomFont;
@@ -19,7 +21,7 @@ public abstract class ScratchBloco extends Component implements RightClickDragga
 	protected final boolean podePorBlocosAposInstrucao; // A instrução aceita blocos após ela (não é uma instrução final)
 	protected final boolean podePorBlocosDentroInstrucao; // A instrução aceita blocos dentro dela, como por exemplo o "while"
 	protected final boolean podePorBlocosAntesInstrucao; // A instrução aceita blocos antes da instrução
-	protected final boolean ehUmBlocoExemplo;
+	protected boolean ehUmBlocoExemplo;
 	
 	protected IComponent pai; // Component anterior a este
 	
@@ -57,7 +59,14 @@ public abstract class ScratchBloco extends Component implements RightClickDragga
 		}
 	}	
 	
-	public abstract void action();
+	public abstract ScratchBloco action(TileEntityBaseRobo base);
+	
+	public ScratchBloco returnAction(TileEntityBaseRobo base){
+		if(pai != null && pai instanceof ScratchBloco){
+			return ((ScratchBloco)pai).returnAction(base);
+		}
+		return null;
+	}
 	
 	@Override
 	public void draw(Tessellator tessellator) {
@@ -107,16 +116,33 @@ public abstract class ScratchBloco extends Component implements RightClickDragga
 	
 	@Override
 	public void draggableAction(int mouseX, int mouseY) {
-		setLeft(mouseX - GUI.getGuiLeft());
-		setTop(mouseY - GUI.getGuiTop());
+		setLeft(mouseX - gui.getGuiLeft());
+		setTop(mouseY - gui.getGuiTop());
 	}
 	
 	@Override
 	public void draggablePos(int mouseX, int mouseY) {
-		IComponent component = GUI.getComponentOn(mouseX, mouseY);
-		if(component != null && component instanceof ScrollPanelComponent){
-			((ScrollPanelComponent)component).addComponent(this);
+		IComponent component = gui.getComponentOn(mouseX, mouseY);
+		if(component != null){
+			if(component instanceof ScrollPanelComponent){
+				((ScrollPanelComponent)component).addComponent(this);
+			}
+			if(component instanceof ScratchBloco){
+				if(!((ScratchBloco)component).addBloco(mouseX, mouseY)){
+					gui.getPanelOn(mouseX, mouseY).addComponent(this);
+				}
+			}
 		}
+	}
+	
+	public abstract ScratchBloco createNewScratchBlock();
+	
+	@Override
+	public RightClickDraggable getDraggableObject(int mouseX, int mouseY) {
+		if(ehUmBlocoExemplo){
+			return createNewScratchBlock();
+		}
+		return this;
 	}
 	
 	@Override
@@ -156,6 +182,9 @@ public abstract class ScratchBloco extends Component implements RightClickDragga
 			if(proximoBloco != null)
 				proximoBloco.setTop(getHeight()+getTop());
 		}
+	}
+	public boolean addBloco(int mouseX, int mouseY){
+		return false;
 	}
 	
 	public boolean addBlocoNaAssinatura(ScratchBloco bloco, int index){
@@ -221,6 +250,10 @@ public abstract class ScratchBloco extends Component implements RightClickDragga
 		super.setTop(top);
 	}
 	
+	public void setPai(IComponent pai) {
+		this.pai = pai;
+	}
+	
 	private ScratchBloco[] getAllScratchBlocks(){
 		int blocosAssLenght = 0;
 		if(blocosNaAssinatura != null)
@@ -234,5 +267,8 @@ public abstract class ScratchBloco extends Component implements RightClickDragga
 		i++;
 		sbs[i] = proximoBloco;
 		return sbs;
+	}
+	public void setEhUmBlocoExemplo(boolean ehUmBlocoExemplo) {
+		this.ehUmBlocoExemplo = ehUmBlocoExemplo;
 	}
 }

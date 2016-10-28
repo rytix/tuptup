@@ -1,8 +1,9 @@
-package xyz.rytix.roboTuptup.gui.components.scratch;
+package xyz.rytix.roboTuptup.gui.components.scratch.core;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.Tessellator;
+import xyz.rytix.roboTuptup.entity.TileEntityBaseRobo;
 import xyz.rytix.roboTuptup.gui.GuiBaseRoboTela;
 import xyz.rytix.roboTuptup.gui.interfaces.RightClickDraggable;
 import xyz.rytix.roboTuptup.helper.TheObliteratorCustomFont;
@@ -22,7 +23,7 @@ public class ScratchBlocoString extends ScratchBloco{
 	
 	@Override
 	public void draw(Tessellator t) {
-		cf.drawString(GUI, STRING, getTrueLeft()+LEFT_RIGHT_SPACE, getTrueTop()+TOP_BOTTOM_SPACE, 0xFFECF0F1);
+		cf.drawString(gui, STRING, getTrueLeft()+LEFT_RIGHT_SPACE, getTrueTop()+TOP_BOTTOM_SPACE, 0xFFECF0F1);
 	}
 
 	@Override
@@ -42,11 +43,18 @@ public class ScratchBlocoString extends ScratchBloco{
 	public RightClickDraggable getDraggableObject(int mouseX, int mouseY) {return null;}
 
 	@Override
-	public void action() {}
-
-	@Override
 	public boolean isMouseInside(int mouseX, int mouseY) {
 		return false;
+	}
+
+	@Override
+	public ScratchBloco createNewScratchBlock() {
+		return new ScratchBlocoString(gui,STRING,getLeft(),getTop());
+	}
+
+	@Override
+	public ScratchBloco action(TileEntityBaseRobo base) {
+		return null;
 	}
 	
 }

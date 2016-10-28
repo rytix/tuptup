@@ -1,6 +1,7 @@
 package xyz.rytix.roboTuptup.gui.interfaces;
 
 import net.minecraft.client.renderer.Tessellator;
+import xyz.rytix.roboTuptup.gui.GuiBaseRoboTela;
 
 public interface IComponent {
 	
@@ -17,4 +18,5 @@ public interface IComponent {
 	public void setTop(int top);
 	public int getWidth();
 	public int getHeight();
+	public void setGui(GuiBaseRoboTela gui);
 }

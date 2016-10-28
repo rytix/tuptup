@@ -10,7 +10,7 @@ public abstract class Component implements IComponent{
 	/**
 	 * A Gui que invocou os componentes
 	 */
-	protected final GuiBaseRoboTela GUI;
+	protected GuiBaseRoboTela gui;
 	private int left;
 	private int top;
 	public int width;
@@ -18,7 +18,7 @@ public abstract class Component implements IComponent{
 	
 	public Component(GuiBaseRoboTela gui) {
 		super();
-		this.GUI = gui;
+		this.gui = gui;
 	}
 	
 	/**
@@ -58,12 +58,12 @@ public abstract class Component implements IComponent{
 	
 	@Override
 	public final int getTrueLeft(){
-		return left + GUI.getGuiLeft();
+		return left + gui.getGuiLeft();
 	}
 	
 	@Override
 	public final int getTrueTop(){
-		return top + GUI.getGuiTop();
+		return top + gui.getGuiTop();
 	}
 	
 	public void setLeft(int left) {
@@ -72,6 +72,10 @@ public abstract class Component implements IComponent{
 	
 	public void setTop(int top) {
 		this.top = top;
+	}
+	@Override
+	public void setGui(GuiBaseRoboTela gui) {
+		this.gui = gui;
 	}
 	
 }

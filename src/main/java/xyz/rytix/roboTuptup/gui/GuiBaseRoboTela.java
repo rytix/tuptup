@@ -14,10 +14,11 @@ import org.lwjgl.opengl.GL11;
 import xyz.rytix.roboTuptup.Config;
 import xyz.rytix.roboTuptup.Tuptup;
 import xyz.rytix.roboTuptup.entity.TileEntityBaseRobo;
-import xyz.rytix.roboTuptup.gui.components.scratch.ScratchBloco;
-import xyz.rytix.roboTuptup.gui.components.scratch.ScratchBlocoTest;
+import xyz.rytix.roboTuptup.gui.components.scratch.actionBlocks.ScratchBlocoAction;
+import xyz.rytix.roboTuptup.gui.components.scratch.core.ScratchBloco;
 import xyz.rytix.roboTuptup.gui.components.Component;
 import xyz.rytix.roboTuptup.gui.components.ScrollPanelComponent;
+import xyz.rytix.roboTuptup.gui.components.ScrollPanelComponentLeft;
 import xyz.rytix.roboTuptup.gui.interfaces.IComponent;
 import xyz.rytix.roboTuptup.gui.interfaces.RightClickDraggable;
 import xyz.rytix.roboTuptup.helper.TheObliteratorCustomFont;
@@ -41,7 +42,7 @@ public class GuiBaseRoboTela extends GuiContainer {
 	public static RightClickDraggable holdObject = null;
 	
 	List<IComponent> components;
-	
+	TileEntityBaseRobo baseRoboEntity;
 
 	public GuiBaseRoboTela(IInventory playerInv,
 			TileEntityBaseRobo baseRoboEntity) {
@@ -49,10 +50,27 @@ public class GuiBaseRoboTela extends GuiContainer {
 				
 		this.xSize = 256;
 		this.ySize = 242;
+		this.baseRoboEntity = baseRoboEntity;
 		
 		components = new ArrayList();
-		components.add(new ScrollPanelComponent(103,1,152,118,500,500,this));
-		components.add(new ScrollPanelComponent(18,1,84,118,500,500,this));
+		components.add(new ScrollPanelComponentLeft(18,1,84,118,500,500,this));
+		ScrollPanelComponent sp2 = new ScrollPanelComponent(103,1,152,118,500,500,this);
+		for(ScratchBloco bloco: baseRoboEntity.getBlocos()){
+			sp2.components.add(bloco);
+			bloco.setGui(this);
+		}
+		components.add(sp2);
+	}
+	@Override
+	public void onGuiClosed() {
+		List<ScratchBloco> listaBlocos =  new ArrayList<ScratchBloco>();
+		List<IComponent> components = ((ScrollPanelComponent)this.components.get(1)).components; 
+		for(IComponent component: components){
+			if(component instanceof ScratchBloco)
+				listaBlocos.add((ScratchBloco) component);
+		}
+		baseRoboEntity.saveAndResetRobot(listaBlocos);
+		super.onGuiClosed();
 	}
 
 	//Função de desenho principal A.K.A Main
@@ -101,6 +119,14 @@ public class GuiBaseRoboTela extends GuiContainer {
 		for(IComponent component: components){
 			if(component.isMouseInside(mouseX, mouseY)){
 				return component.getComponentOn(mouseX, mouseY);
+			}
+		}
+		return null;
+	}
+	public ScrollPanelComponent getPanelOn(int mouseX, int mouseY){
+		for(IComponent component: components){
+			if(component instanceof ScrollPanelComponent && component.isMouseInside(mouseX, mouseY)){
+				return (ScrollPanelComponent)component;
 			}
 		}
 		return null;

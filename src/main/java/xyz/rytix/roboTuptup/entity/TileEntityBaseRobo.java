@@ -1,8 +1,16 @@
 package xyz.rytix.roboTuptup.entity;
 
+import xyz.rytix.roboTuptup.Tuptup;
 import xyz.rytix.roboTuptup.block.BlockRobo;
 import xyz.rytix.roboTuptup.block.BlockRobo.Move;
+import xyz.rytix.roboTuptup.gui.TuptupGuiHandler;
+import xyz.rytix.roboTuptup.gui.components.scratch.core.ScratchBloco;
+import xyz.rytix.roboTuptup.gui.components.scratch.core.ScratchBlocoInicio;
 import xyz.rytix.roboTuptup.helper.Initializer;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -21,11 +29,20 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ILockableContainer;
 import net.minecraft.world.LockCode;
+import net.minecraft.world.World;
 
 public class TileEntityBaseRobo extends TileEntity implements ITickable, IInventory{	
 	private String customName;
 	private BlockPos roboPos = null;
 	private ItemStack[] roboItemStack = new ItemStack[42];
+	
+	public static final List<PseudoPacket> packets = new ArrayList<PseudoPacket>();
+	
+	private List<ScratchBloco> blocos = new ArrayList();
+	private ScratchBloco atualExecBloco;
+	
+	private long milis = 0;
+	
 	public BlockPos getPos_robo() {
 		return roboPos;
 	}
@@ -35,8 +52,15 @@ public class TileEntityBaseRobo extends TileEntity implements ITickable, IInvent
 		((TileEntityRobo)worldObj.getTileEntity(roboPos)).setBase(pos);
 	}
 	
-	public void onBlockActivated(BlockPos pos){
-		roboPos = Initializer.BLOCK_ROBO.moveRobot(worldObj, roboPos, Move.FRONT);
+	public void moveRobot(Move move){
+		roboPos = Initializer.BLOCK_ROBO.moveRobot(worldObj, roboPos, move);
+	}
+	
+	public void onBlockActivated(EntityPlayer playerIn, World worldIn, BlockPos pos){
+		if(worldIn.isRemote){
+			return;
+		}
+		playerIn.openGui(Tuptup.instance, TuptupGuiHandler.BASE_GUI, worldIn, pos.getX(), pos.getY(), pos.getZ());
 	}
 	
 	@Override
@@ -84,8 +108,33 @@ public class TileEntityBaseRobo extends TileEntity implements ITickable, IInvent
 	
 	///ITickable Interface
 	@Override
-	public void update() {
-		// TODO Auto-generated method stub
+	public void update() {	
+		if(System.currentTimeMillis() > milis + 2000 && !worldObj.isRemote){//&& atualExecBloco != null){
+			BlockPos pos = this.getPos();
+			for(PseudoPacket packet:packets){
+				if(packet.x == pos.getX() && packet.y == pos.getY() && packet.z == pos.getZ()){
+					blocos.clear();
+					blocos.addAll(packet.blocos);
+					packets.remove(packet);
+					for(ScratchBloco bloco: blocos){
+						if(bloco instanceof ScratchBlocoInicio){
+							atualExecBloco = bloco;
+							break;
+						}
+					}
+					break;
+				}
+			}
+
+			if(atualExecBloco == null){
+				
+			}
+			
+			milis = System.currentTimeMillis();
+			for(ScratchBloco bloco : blocos){
+				bloco.action(this);
+			}
+		}
 	}
 	//IInventory Interface
 	@Override
@@ -164,5 +213,20 @@ public class TileEntityBaseRobo extends TileEntity implements ITickable, IInvent
         {
             this.roboItemStack[i] = null;
         }
+	}
+	public void saveAndResetRobot(List<ScratchBloco> blocos) {
+		packets.add(new PseudoPacket(pos.getX(), pos.getY(), pos.getZ(), blocos));
+		this.blocos.clear();
+		this.blocos.addAll(blocos);
+		for(ScratchBloco bloco: this.blocos){
+			if(bloco instanceof ScratchBlocoInicio){
+				atualExecBloco = bloco;
+				break;
+			}
+		}
+	}
+	
+	public List<ScratchBloco> getBlocos() {
+		return blocos;
 	}
 }

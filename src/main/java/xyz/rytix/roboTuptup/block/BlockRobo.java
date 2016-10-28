@@ -50,7 +50,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 public class BlockRobo extends Block implements ITileEntityProvider{
 	public static final PropertyDirection FACING = BlockHorizontal.FACING;
 	public enum Move{
-		UP,DOWN,FRONT,BACK,LEFT,RIGHT,CLOCK,ANTICLOCK
+		UP,DOWN,FRONT,BACK,LEFT,RIGHT,CLOCK,ANTICLOCK,TELEPORT
 	}
 	
 	public static String REGISTRY_NAME = "robo";
@@ -70,9 +70,13 @@ public class BlockRobo extends Block implements ITileEntityProvider{
 		
 		BlockPos old = pos;
 		EnumFacing facing = (EnumFacing) worldIn.getBlockState(pos).getProperties().get(FACING);
-		TileEntity entity = worldIn.getTileEntity(pos);
+		TileEntityRobo entity = (TileEntityRobo) worldIn.getTileEntity(pos);
 		
 		switch(move){
+			case TELEPORT:
+				facing = EnumFacing.NORTH;
+				pos = new BlockPos(entity.getBase().getX(),entity.getBase().getY(),entity.getBase().getZ());
+				break;
 			case CLOCK:
 				facing = facing.rotateY();
 				break;
@@ -161,7 +165,7 @@ public class BlockRobo extends Block implements ITileEntityProvider{
 				break;
 		
 		}
-		if(worldIn.isAirBlock(pos)){
+		if(worldIn.isAirBlock(pos) || old == pos){
 			//TODO Find a Better way to do this logic.
 			BlockPos base = ((TileEntityRobo)worldIn.getTileEntity(old)).getBase();
 			worldIn.setBlockToAir(old);
