@@ -148,7 +148,7 @@ public abstract class ScratchBloco extends Component implements RightClickDragga
 				height = blocoNaAssinatura.getHeight();
 			}
 		}
-		width = left;
+		width = left - getLeft();
 		if(height != getSignatureHeight()){
 			setSignatureHeight(height);
 			if(proximoBlocoDentro != null)

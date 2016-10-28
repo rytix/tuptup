@@ -66,7 +66,7 @@ public class ScrollPanelComponent extends Component implements RightClickDraggab
 		int left = getTrueLeft();
 		int top = getTrueTop();
 		
-		if(mouseX >= left && mouseX <= left + WIDTH && mouseY >= top && mouseY <= top + WIDTH)
+		if(mouseX >= left && mouseX <= left + WIDTH && mouseY >= top && mouseY <= top + HEIGHT)
 			return true;
 		return false;
 	}
