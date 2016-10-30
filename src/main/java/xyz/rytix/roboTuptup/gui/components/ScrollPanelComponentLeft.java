@@ -13,10 +13,4 @@ public class ScrollPanelComponentLeft extends ScrollPanelComponent{
 
 		components.addAll(BlockFactory.createActionBlocks(gui, left, top));
 	}
-	
-	@Override
-	public IComponent getComponentOn(int mouseX, int mouseY) {
-		return null;
-	}
-	
 }

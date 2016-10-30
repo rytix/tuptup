@@ -57,18 +57,27 @@ public abstract class ScratchBloco extends Component implements RightClickDragga
         GlStateManager.disableTexture2D();
         
 		DrawHelper.drawInstructionScratchBlock(tessellator, left, top, getWidth(), getHeight(), podePorBlocosAntesInstrucao, podePorBlocosAposInstrucao);
-		for(ScratchBloco bloco: blocosNaAssinatura){
-			bloco.draw(tessellator);
-		}
 		
         GlStateManager.popAttrib();
         GlStateManager.popMatrix();	
+        
+        ScratchBloco[] blocos = getAllScratchBlocks();
+        
+		for(ScratchBloco sb: blocos){
+			if(sb != null)
+				sb.draw(tessellator);
+		}
 	}
 	
 	public abstract ScratchBloco action(TileEntityBaseRobo base);
 	
 	@Override
-	public void draggablePre(int mouseX, int mouseY) {}
+	public void draggablePre(int mouseX, int mouseY) {
+		IComponent pai = getPai();
+		if(pai != null && pai instanceof ScratchBloco){
+			((ScratchBloco)pai).removePaiVinculo(this);
+		}
+	}
 	
 	public ScratchBloco returnAction(TileEntityBaseRobo base){
 		if(pai != null && pai instanceof ScratchBloco){
@@ -90,8 +99,8 @@ public abstract class ScratchBloco extends Component implements RightClickDragga
 	
 	@Override
 	public boolean isMouseInside(int mouseX, int mouseY) {
-		if(mouseX > getTrueLeft() && mouseX < getTrueLeft() + getWidth()){
-			if(mouseY > getTrueTop() && mouseY < getTrueTop() + getHeight()){
+		if(mouseX > getTrueLeft() && mouseX < getTrueLeft() + getMaxWidth()){
+			if(mouseY > getTrueTop() && mouseY < getTrueTop() + getTotalHeight()){
 				return true;
 			}
 		}
@@ -162,13 +171,25 @@ public abstract class ScratchBloco extends Component implements RightClickDragga
 			if(proximoBloco != null)
 				proximoBloco.setTop(getHeight()+getTop());
 		}
+		
+		if(pai != null && pai instanceof ScratchBloco){
+			((ScratchBloco)pai).refreshAll();
+		}
 	}
 	public boolean addBloco(ScratchBloco bloco, int mouseX, int mouseY){
 		//Bloco (Bloco para adicionar)
 		//This (Bloco que irá adicionar)
 		//TODO assinatura
 		//TODO interno
-		return false;
+		if(ehUmBlocoExemplo){
+			return false;
+		}
+		return setProximoBloco(bloco);
+	}
+	
+	public void removePaiVinculo(ScratchBloco bloco){
+		proximoBloco.setPai(null);
+		proximoBloco = null;
 	}
 	
 	public boolean addBlocoNaAssinatura(ScratchBloco bloco, int index){
@@ -178,9 +199,6 @@ public abstract class ScratchBloco extends Component implements RightClickDragga
 		{			
 			blocosNaAssinatura[index] = bloco;
 			refreshAll();
-			if(pai != null && pai instanceof ScratchBloco){
-				((ScratchBloco)pai).refreshAll();
-			}
 			return true;
 		}
 		return false;
@@ -203,6 +221,18 @@ public abstract class ScratchBloco extends Component implements RightClickDragga
 		}
 		sbs[i] = proximoBloco;
 		return sbs;
+	}
+	
+	public boolean setProximoBloco(ScratchBloco proximoBloco) {
+		if(proximoBloco == null || this.proximoBloco == null){
+			this.proximoBloco = proximoBloco;
+			this.proximoBloco.setLeft(getLeft());
+			this.proximoBloco.setTop(getTop()+getHeight());
+			this.proximoBloco.setPai(this);
+			refreshAll();
+			return true;
+		}
+		return false;
 	}
 	
 	@Override
@@ -231,5 +261,23 @@ public abstract class ScratchBloco extends Component implements RightClickDragga
 	
 	public void setPai(IComponent pai) {
 		this.pai = pai;
+	}
+	public IComponent getPai() {
+		return pai;
+	}
+	
+	public int getMaxWidth(){
+		int widthProximos = getWidth();
+		if(proximoBloco != null){
+			widthProximos = proximoBloco.getMaxWidth();
+		}
+		return getWidth() > widthProximos ? getWidth() : widthProximos;
+	}
+	public int getTotalHeight(){
+		if(proximoBloco == null){
+			return getHeight();
+		}else{
+			return getHeight() + proximoBloco.getTotalHeight();
+		}
 	}
 }

@@ -7,6 +7,7 @@ public class ScratchBlocoInicio extends ScratchBloco{
 
 	public ScratchBlocoInicio(GuiBaseRoboTela gui, int left, int top, boolean ehUmBlocoExemplo) {
 		super(gui,left,top,new Class[]{ScratchBlocoString.class},false,true,ehUmBlocoExemplo);
+		addBlocoNaAssinatura(new ScratchBlocoString(this, gui, "Inicio", left, top), 0);
 	}
 
 	@Override
@@ -16,7 +17,6 @@ public class ScratchBlocoInicio extends ScratchBloco{
 
 	@Override
 	public ScratchBloco createNewScratchBlock() {
-		// TODO Auto-generated method stub
 		return new ScratchBlocoInicio(gui, getLeft(), getTop(),false);
 	}
 

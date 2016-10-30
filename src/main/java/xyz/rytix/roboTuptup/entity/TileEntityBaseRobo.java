@@ -16,6 +16,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.IInventory;
@@ -26,6 +27,8 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityLockableLoot;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ILockableContainer;
 import net.minecraft.world.LockCode;
@@ -127,13 +130,19 @@ public class TileEntityBaseRobo extends TileEntity implements ITickable, IInvent
 			}
 
 			if(atualExecBloco == null){
-				
+				moveRobot(Move.TELEPORT);
+				for(ScratchBloco bloco: blocos){
+					if(bloco instanceof ScratchBlocoInicio){
+						atualExecBloco = bloco;
+						break;
+					}
+				}
 			}
-			
+			if(atualExecBloco != null){
+				atualExecBloco = atualExecBloco.action(this);
+		        worldObj.playEvent(null, 1008, roboPos, 0);
+			}
 			milis = System.currentTimeMillis();
-			for(ScratchBloco bloco : blocos){
-				bloco.action(this);
-			}
 		}
 	}
 	//IInventory Interface

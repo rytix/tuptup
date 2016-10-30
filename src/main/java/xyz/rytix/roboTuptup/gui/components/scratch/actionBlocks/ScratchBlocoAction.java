@@ -23,7 +23,7 @@ public abstract class ScratchBlocoAction extends ScratchBloco{
 
 	public ScratchBlocoAction(GuiBaseRoboTela gui, int left, int top, String texto, boolean exemplo) {
 		super(gui,left,top,new Class[]{ScratchBlocoString.class},true,true,exemplo);
-		addBlocoNaAssinatura(new ScratchBlocoString(gui, texto, left, top),0);
+		addBlocoNaAssinatura(new ScratchBlocoString(this, gui, texto, left, top),0);
 	}
 	
 	@Override

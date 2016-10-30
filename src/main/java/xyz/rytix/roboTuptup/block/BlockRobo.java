@@ -75,7 +75,7 @@ public class BlockRobo extends Block implements ITileEntityProvider{
 		switch(move){
 			case TELEPORT:
 				facing = EnumFacing.NORTH;
-				pos = new BlockPos(entity.getBase().getX(),entity.getBase().getY(),entity.getBase().getZ());
+				pos = new BlockPos(entity.getBase().getX(),entity.getBase().getY(),entity.getBase().getZ()).up();
 				break;
 			case CLOCK:
 				facing = facing.rotateY();

@@ -5,6 +5,7 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.Tessellator;
 import xyz.rytix.roboTuptup.entity.TileEntityBaseRobo;
 import xyz.rytix.roboTuptup.gui.GuiBaseRoboTela;
+import xyz.rytix.roboTuptup.gui.interfaces.IComponent;
 import xyz.rytix.roboTuptup.gui.interfaces.RightClickDraggable;
 import xyz.rytix.roboTuptup.helper.TheObliteratorCustomFont;
 
@@ -15,10 +16,11 @@ public class ScratchBlocoString extends ScratchBloco{
 	private final int TOP_BOTTOM_SPACE = 4;
 	private final int LEFT_RIGHT_SPACE = 4;
 
-	public ScratchBlocoString(GuiBaseRoboTela gui, String string, int left, int top) {
+	public ScratchBlocoString(ScratchBloco pai, GuiBaseRoboTela gui, String string, int left, int top) {
 		super(gui, left, top, null, false, false, false);
 		this.cf = new TheObliteratorCustomFont(Minecraft.getMinecraft(), "Arial", 9);
 		this.STRING = string;
+		setPai(pai);
 	}
 	
 	@Override
@@ -35,26 +37,32 @@ public class ScratchBlocoString extends ScratchBloco{
 	public int getHeight() {
 		return cf.getStringHeight(STRING) + TOP_BOTTOM_SPACE*2;
 	}
+	@Override
+	public IComponent getComponentOn(int mouseX, int mouseY) {
+		return getPai();
+	}
 
 	@Override
 	public void draggablePos(int mouseX, int mouseY) {}
 
 	@Override
-	public RightClickDraggable getDraggableObject(int mouseX, int mouseY) {return null;}
-
-	@Override
-	public boolean isMouseInside(int mouseX, int mouseY) {
-		return false;
+	public RightClickDraggable getDraggableObject(int mouseX, int mouseY) {
+		return getPai() instanceof RightClickDraggable ? ((RightClickDraggable) getPai()).getDraggableObject(mouseX, mouseY) : null;
 	}
 
 	@Override
 	public ScratchBloco createNewScratchBlock() {
-		return new ScratchBlocoString(gui,STRING,getLeft(),getTop());
+		return null;
 	}
 
 	@Override
 	public ScratchBloco action(TileEntityBaseRobo base) {
 		return null;
+	}
+	
+	@Override
+	public boolean addBloco(ScratchBloco bloco, int mouseX, int mouseY) {
+		return false;
 	}
 	
 }

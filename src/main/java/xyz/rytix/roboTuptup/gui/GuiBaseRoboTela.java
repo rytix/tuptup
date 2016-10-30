@@ -101,13 +101,13 @@ public class GuiBaseRoboTela extends GuiContainer {
 	@Override
 	protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
 		if(Mouse.isButtonDown(0) && holdObject == null){
-			for(IComponent component: components){
-				if(component.isMouseInside(mouseX, mouseY) && 
-						component instanceof RightClickDraggable){
-					holdObject = ((RightClickDraggable)component).getDraggableObject(mouseX, mouseY);
-					holdObject.draggablePre(mouseX, mouseY);
-				}
+			IComponent component = getComponentOn(mouseX, mouseY);
+			if(component instanceof RightClickDraggable){
+				holdObject = ((RightClickDraggable)component).getDraggableObject(mouseX, mouseY);
+				holdObject.draggablePre(mouseX, mouseY);
+				getPanelOn(mouseX, mouseY).components.remove(holdObject); // XXX
 			}
+			
 		}else if(holdObject != null){
 			holdObject.draggableAction(mouseX, mouseY);
 		}
