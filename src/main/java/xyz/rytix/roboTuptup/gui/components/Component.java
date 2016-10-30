@@ -13,12 +13,14 @@ public abstract class Component implements IComponent{
 	protected GuiBaseRoboTela gui;
 	private int left;
 	private int top;
-	public int width;
-	public int height;
+	private int width;
+	private int height;
 	
-	public Component(GuiBaseRoboTela gui) {
+	public Component(GuiBaseRoboTela gui, int left, int top) {
 		super();
 		this.gui = gui;
+		this.left = left;
+		this.top = top;
 	}
 	
 	/**
@@ -50,10 +52,16 @@ public abstract class Component implements IComponent{
 	public int getWidth(){
 		return width;
 	}
+	public void setWidth(int width) {
+		this.width = width;
+	}
 	
 	@Override
 	public int getHeight(){
 		return height;
+	}
+	public void setHeight(int height) {
+		this.height = height;
 	}
 	
 	@Override

@@ -38,10 +38,7 @@ public class ScrollPanelComponent extends Component implements RightClickDraggab
 			int width, int height,
 			int SCROLL_WIDTH, int SCROLL_HEIGHT, GuiBaseRoboTela gui) 
 	{
-		super(gui);
-		
-		setLeft(left);
-		setTop(top);
+		super(gui,left,top);
 		
 		this.WIDTH = width;
 		this.HEIGHT = height;

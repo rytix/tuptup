@@ -22,7 +22,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 public abstract class ScratchBlocoAction extends ScratchBloco{
 
 	public ScratchBlocoAction(GuiBaseRoboTela gui, int left, int top, String texto, boolean exemplo) {
-		super(true, false, true, exemplo, new Class[]{ScratchBlocoString.class}, gui, left,top);
+		super(gui,left,top,new Class[]{ScratchBlocoString.class},true,true,exemplo);
 		addBlocoNaAssinatura(new ScratchBlocoString(gui, texto, left, top),0);
 	}
 	

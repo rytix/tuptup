@@ -16,7 +16,7 @@ public class ScratchBlocoString extends ScratchBloco{
 	private final int LEFT_RIGHT_SPACE = 4;
 
 	public ScratchBlocoString(GuiBaseRoboTela gui, String string, int left, int top) {
-		super(false,false,false,false,null,gui,left,top);
+		super(gui, left, top, null, false, false, false);
 		this.cf = new TheObliteratorCustomFont(Minecraft.getMinecraft(), "Arial", 9);
 		this.STRING = string;
 	}

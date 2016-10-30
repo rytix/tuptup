@@ -6,7 +6,7 @@ import xyz.rytix.roboTuptup.gui.GuiBaseRoboTela;
 public class ScratchBlocoInicio extends ScratchBloco{
 
 	public ScratchBlocoInicio(GuiBaseRoboTela gui, int left, int top, boolean ehUmBlocoExemplo) {
-		super(true, false, false, ehUmBlocoExemplo,	new Class[]{ScratchBlocoString.class}, gui, left, top);
+		super(gui,left,top,new Class[]{ScratchBlocoString.class},false,true,ehUmBlocoExemplo);
 	}
 
 	@Override
