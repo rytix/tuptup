@@ -15,7 +15,7 @@ public class ScratchBlocoAndarTras extends ScratchBlocoAction{
 	@Override
 	public ScratchBloco action(TileEntityBaseRobo base) {
 		base.moveRobot(Move.BACK);
-		return proximoBloco;
+		return super.action(base);
 	}
 
 	@Override

@@ -25,7 +25,7 @@ public class ScratchBlocoString extends ScratchBloco{
 	
 	@Override
 	public void draw(Tessellator t) {
-		cf.drawString(gui, STRING, getTrueLeft()+LEFT_RIGHT_SPACE, getTrueTop()+TOP_BOTTOM_SPACE, 0xFFECF0F1);
+		cf.drawString(gui, STRING, getTrueLeft()+LEFT_RIGHT_SPACE, getTrueTop()+TOP_BOTTOM_SPACE/2, 0xFFECF0F1);
 	}
 
 	@Override

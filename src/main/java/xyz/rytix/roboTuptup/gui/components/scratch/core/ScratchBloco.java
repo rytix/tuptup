@@ -149,33 +149,38 @@ public abstract class ScratchBloco extends Component implements RightClickDragga
 			return proximoBloco.getComponentOn(mouseX, mouseY);
 		return this;
 	}
-	
-	//Add New Blocos
-	public void refreshAll(){
-		int left = getLeft();
+
+	protected void setWidthHeight(){
+		int right = getLeft();
 		int top = getTop();
-		int height = 0; 
+		int height = 5; 
 		for(ScratchBloco blocoNaAssinatura: blocosNaAssinatura){
 			if(blocoNaAssinatura == null){
 				continue;
 			}
-			blocoNaAssinatura.setLeft(left);
-			left += blocoNaAssinatura.getWidth();
+			blocoNaAssinatura.setLeft(right);
+			right += blocoNaAssinatura.getWidth();
 			if(height < blocoNaAssinatura.getHeight()){
 				height = blocoNaAssinatura.getHeight();
 			}
 		}
-		setWidth(left - getLeft());
+		setWidth(right - getLeft());
 		if(height != getHeight()){
 			setHeight(height);
-			if(proximoBloco != null)
-				proximoBloco.setTop(getHeight()+getTop());
 		}
-		
+	}
+	
+	public void refreshAll(){
+		setWidthHeight();
+		if(proximoBloco != null){
+			proximoBloco.setTop(getHeight()+getTop());
+			proximoBloco.setLeft(getLeft());
+		}
 		if(pai != null && pai instanceof ScratchBloco){
 			((ScratchBloco)pai).refreshAll();
 		}
 	}
+	
 	public boolean addBloco(ScratchBloco bloco, int mouseX, int mouseY){
 		//Bloco (Bloco para adicionar)
 		//This (Bloco que irá adicionar)
@@ -188,8 +193,8 @@ public abstract class ScratchBloco extends Component implements RightClickDragga
 	}
 	
 	public void removePaiVinculo(ScratchBloco bloco){
-		proximoBloco.setPai(null);
-		proximoBloco = null;
+		bloco.setPai(null);
+		bloco = null;
 	}
 	
 	public boolean addBlocoNaAssinatura(ScratchBloco bloco, int index){
@@ -226,8 +231,6 @@ public abstract class ScratchBloco extends Component implements RightClickDragga
 	public boolean setProximoBloco(ScratchBloco proximoBloco) {
 		if(proximoBloco == null || this.proximoBloco == null){
 			this.proximoBloco = proximoBloco;
-			this.proximoBloco.setLeft(getLeft());
-			this.proximoBloco.setTop(getTop()+getHeight());
 			this.proximoBloco.setPai(this);
 			refreshAll();
 			return true;
@@ -279,5 +282,14 @@ public abstract class ScratchBloco extends Component implements RightClickDragga
 		}else{
 			return getHeight() + proximoBloco.getTotalHeight();
 		}
+	}
+	@Override
+	public void setGui(GuiBaseRoboTela gui) {
+		ScratchBloco[] blocos = getAllScratchBlocks();
+		for(ScratchBloco bloco : blocos){
+			if(bloco != null)
+				bloco.setGui(gui);
+		}
+		super.setGui(gui);
 	}
 }

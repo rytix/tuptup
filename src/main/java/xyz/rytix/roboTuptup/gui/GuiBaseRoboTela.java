@@ -87,7 +87,7 @@ public class GuiBaseRoboTela extends GuiContainer {
 	
 	@Override
 	public boolean doesGuiPauseGame() {
-		return true;
+		return false;
 	}
 	@Override
 	protected void mouseReleased(int mouseX, int mouseY, int state) {

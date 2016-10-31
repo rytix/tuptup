@@ -61,6 +61,73 @@ public class BlockRobo extends Block implements ITileEntityProvider{
 		setDefaultState(getDefaultState().withProperty(FACING, EnumFacing.NORTH));
 		
 	}
+	
+	public Item harvestBlockOn(World worldIn, BlockPos pos, Move harvestPosition){
+		EnumFacing facing = (EnumFacing) worldIn.getBlockState(pos).getProperties().get(FACING);
+		pos = getReferenceBlockPos(pos, harvestPosition, facing);
+		
+		IBlockState blockState = worldIn.getBlockState(pos);
+		Item item = blockState.getBlock().getItemDropped(blockState, RANDOM, 1);
+		worldIn.setBlockToAir(pos);
+		return item;
+	}
+	
+	private BlockPos getReferenceBlockPos(BlockPos origin, Move reference, EnumFacing facing){
+		switch(reference){
+		case UP:
+			return origin.up();
+		case DOWN:
+			return origin.down();
+		case FRONT:
+			switch(facing){
+			case NORTH:
+				return origin.north();
+			case SOUTH:
+				return origin.south();
+			case EAST:
+				return origin.east();
+			case WEST:
+				return origin.west();
+			}
+			break;
+		case BACK:
+			switch(facing){
+			case NORTH:
+				return origin.south();
+			case SOUTH:
+				return origin.north();
+			case EAST:
+				return origin.west();
+			case WEST:
+				return origin.east();
+			}
+			break;
+		case LEFT:
+			switch(facing){
+			case NORTH:
+				return origin.west();
+			case SOUTH:
+				return origin.east();
+			case EAST:
+				return origin.north();
+			case WEST:
+				return origin.south();
+			}
+			break;
+		case RIGHT:
+			switch(facing){
+			case NORTH:
+				return origin.east();
+			case SOUTH:
+				return origin.west();
+			case EAST:
+				return origin.south();
+			case WEST:
+				return origin.north();
+			}
+		}
+		return null;
+	}
 		
 	public BlockPos moveRobot(World worldIn, BlockPos pos, Move move){
 		if(worldIn.isRemote){

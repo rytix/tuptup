@@ -6,6 +6,7 @@ import java.util.Stack;
 
 import org.lwjgl.opengl.GL11;
 
+import xyz.rytix.roboTuptup.entity.TileEntityBaseRobo;
 import xyz.rytix.roboTuptup.gui.GuiBaseRoboTela;
 import xyz.rytix.roboTuptup.gui.components.scratch.core.ScratchBloco;
 import xyz.rytix.roboTuptup.gui.components.scratch.core.ScratchBlocoString;
@@ -26,6 +27,13 @@ public abstract class ScratchBlocoAction extends ScratchBloco{
 		addBlocoNaAssinatura(new ScratchBlocoString(this, gui, texto, left, top),0);
 	}
 	
+	@Override
+	public ScratchBloco action(TileEntityBaseRobo base) {
+		if(proximoBloco != null){
+			return proximoBloco;
+		}
+		return returnAction(base);
+	}
 	@Override
 	public void draw(Tessellator tessellator) {
 		super.draw(tessellator);

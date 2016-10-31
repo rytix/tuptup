@@ -1,6 +1,7 @@
 package xyz.rytix.roboTuptup.gui.components;
 
 import xyz.rytix.roboTuptup.gui.GuiBaseRoboTela;
+import xyz.rytix.roboTuptup.gui.components.scratch.DrawHelper;
 import xyz.rytix.roboTuptup.gui.components.scratch.core.ScratchBloco;
 import xyz.rytix.roboTuptup.gui.interfaces.IComponent;
 import net.minecraft.client.gui.Gui;

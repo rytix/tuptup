@@ -14,7 +14,7 @@ public class ScratchBlocoGirarEsquerda extends ScratchBlocoAction{
 	@Override
 	public ScratchBloco action(TileEntityBaseRobo base) {
 		base.moveRobot(Move.ANTICLOCK);
-		return proximoBloco;
+		return super.action(base);
 	}
 
 	@Override

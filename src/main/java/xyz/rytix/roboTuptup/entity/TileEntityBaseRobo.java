@@ -59,6 +59,11 @@ public class TileEntityBaseRobo extends TileEntity implements ITickable, IInvent
 		roboPos = Initializer.BLOCK_ROBO.moveRobot(worldObj, roboPos, move);
 	}
 	
+	public void harvestFrom(Move move){
+		ItemStack itemStack = new ItemStack(Initializer.BLOCK_ROBO.harvestBlockOn(worldObj, roboPos, move));
+		autoAddInventory(itemStack);
+	}
+	
 	public void onBlockActivated(EntityPlayer playerIn, World worldIn, BlockPos pos){
 		if(worldIn.isRemote){
 			return;
@@ -112,7 +117,7 @@ public class TileEntityBaseRobo extends TileEntity implements ITickable, IInvent
 	///ITickable Interface
 	@Override
 	public void update() {	
-		if(System.currentTimeMillis() > milis + 2000 && !worldObj.isRemote){//&& atualExecBloco != null){
+		if(System.currentTimeMillis() > milis + 350 && !worldObj.isRemote){//&& atualExecBloco != null){
 			BlockPos pos = this.getPos();
 			for(PseudoPacket packet:packets){
 				if(packet.x == pos.getX() && packet.y == pos.getY() && packet.z == pos.getZ()){
@@ -231,6 +236,28 @@ public class TileEntityBaseRobo extends TileEntity implements ITickable, IInvent
 			if(bloco instanceof ScratchBlocoInicio){
 				atualExecBloco = bloco;
 				break;
+			}
+		}
+	}
+	public void autoAddInventory(ItemStack stack){
+		if(stack.getItem() == null)
+			return;
+		int sizeLimit = getInventoryStackLimit();
+		int fieldCount = roboItemStack.length;
+		for(int i = 0; i < fieldCount; i++){
+			if(roboItemStack[i] == null ){
+				roboItemStack[i] = stack;
+				return;
+			}else if(roboItemStack[i].getItem() == stack.getItem()){
+				int resto;
+				if(roboItemStack[i].stackSize + stack.stackSize < sizeLimit){
+					roboItemStack[i].stackSize += stack.stackSize;
+					return;
+				}else{
+					resto = roboItemStack[i].stackSize + stack.stackSize - sizeLimit;
+					roboItemStack[i].stackSize = sizeLimit;
+					stack.stackSize = resto;
+				}
 			}
 		}
 	}
