@@ -21,7 +21,8 @@ public class DrawHelper {
 	
 	public static final int GROSSURA_BORDA_INSTRUCAO_INTERNA = 4;
 	
-	private static void drawBottomConnector(Tessellator t,int x,int y,int height){
+	private static void drawBottomConnector(Tessellator t,int color,int x,int y,int height){
+		setColor(color);
 		x+=LEFT_CONNECTOR;
 		y+=height;
 		VertexBuffer vb = t.getBuffer();
@@ -45,16 +46,16 @@ public class DrawHelper {
 		
 		t.draw();
 	}
-	public static void drawInstructionScratchBlock(Tessellator t,int x,int y, int contentWidth, int contentHeight, boolean podePorInstrucoesAntes, boolean podePorInstrucoesDepois){
-		drawInstructionScratchBlock(t,x,y, contentWidth, contentHeight, podePorInstrucoesAntes, podePorInstrucoesDepois, true,0);
+	public static void drawInstructionScratchBlock(Tessellator t,int color, int borderColor, int x,int y, int contentWidth, int contentHeight, boolean podePorInstrucoesAntes, boolean podePorInstrucoesDepois){
+		drawInstructionScratchBlock(t,color,borderColor,x,y, contentWidth, contentHeight, podePorInstrucoesAntes, podePorInstrucoesDepois, true,0);
 	}
 
-	public static void drawInstructionScratchBlock(Tessellator t,int x,int y, int contentWidth, int contentHeight, boolean podePorInstrucoesAntes, boolean podePorInstrucoesDepois, boolean frufruLeft, int recuoLeftConnector){
+	public static void drawInstructionScratchBlock(Tessellator t,int color, int borderColor,int x,int y, int contentWidth, int contentHeight, boolean podePorInstrucoesAntes, boolean podePorInstrucoesDepois, boolean frufruLeft, int recuoLeftConnector){
 		int width = contentWidth + LEFT_RIGHT_SPACE_BLOCK;
 		contentHeight += TOP_BOTTOM_SPACE_BLOCK*2;
 		VertexBuffer vb = t.getBuffer();
 				
-		GL11.glColor4f(0/255.0F, 153/255.0F, 182/255.0F, 1.0F);
+		setColor(color);
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		
 		vb.begin(GL11.GL_QUAD_STRIP, DefaultVertexFormats.POSITION);
@@ -101,28 +102,33 @@ public class DrawHelper {
 		t.draw();
 		
 		if(podePorInstrucoesDepois){
-			drawBottomConnector(t, x, y, contentHeight);
+			drawBottomConnector(t,color, x, y, contentHeight);
 		}
+		drawBorder(t, borderColor, x, y+contentHeight, contentWidth);
+	}
+	
+	private static void drawBorder(Tessellator t, int borderColor, int left, int top, int width){
+		VertexBuffer vb = t.getBuffer();
 		
-		GL11.glColor4f(0/255.0F, 124/255.0F, 205/255.0F, 1.0F);
+		setColor(borderColor);
 		vb.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION);
-		vb.pos((double)x+FRUFRU_INST_BLOCK*2, (double)y+contentHeight-1, 0.0D).endVertex();
-		vb.pos((double)x+LEFT_CONNECTOR, (double)y+contentHeight-1, 0.0D).endVertex();
-		vb.pos((double)x+LEFT_CONNECTOR+WIDTH_TRIANGLE_CONNECTOR, (double)y+contentHeight+HEIGHT_CONNECTOR-1, 0.0D).endVertex();
-		vb.pos((double)x+LEFT_CONNECTOR+WIDTH_TRIANGLE_CONNECTOR+WIDTH_RECT_CONNECTOR, (double)y+contentHeight+HEIGHT_CONNECTOR-1, 0.0D).endVertex();
-		vb.pos((double)x+LEFT_CONNECTOR+WIDTH_TRIANGLE_CONNECTOR*2+WIDTH_RECT_CONNECTOR, (double)y+contentHeight-1, 0.0D).endVertex();
-		vb.pos((double)x+contentWidth+1, (double)y+contentHeight-1, 0.0D).endVertex();
-		vb.pos((double)x+contentWidth+FRUFRU_INST_BLOCK*2, (double)y+contentHeight-FRUFRU_INST_BLOCK*2, 0.0D).endVertex();
+		vb.pos((double)left+FRUFRU_INST_BLOCK*2, (double)top, 0.0D).endVertex();
+		vb.pos((double)left+LEFT_CONNECTOR, (double)top, 0.0D).endVertex();
+		vb.pos((double)left+LEFT_CONNECTOR+WIDTH_TRIANGLE_CONNECTOR, (double)top+HEIGHT_CONNECTOR, 0.0D).endVertex();
+		vb.pos((double)left+LEFT_CONNECTOR+WIDTH_TRIANGLE_CONNECTOR+WIDTH_RECT_CONNECTOR, (double)top+HEIGHT_CONNECTOR, 0.0D).endVertex();
+		vb.pos((double)left+LEFT_CONNECTOR+WIDTH_TRIANGLE_CONNECTOR*2+WIDTH_RECT_CONNECTOR, (double)top, 0.0D).endVertex();
+		vb.pos((double)left+width+1, (double)top, 0.0D).endVertex();
+		vb.pos((double)left+width+FRUFRU_INST_BLOCK*2, (double)top-FRUFRU_INST_BLOCK*2, 0.0D).endVertex();
 
 		t.draw();
 	}
 	
-	public static void drawInstructionScratchWithBlocksBlock(Tessellator t,int x,int y, int contentSgnatureWidth, int contentSignatureHeight, int contentBodyHeight, boolean podePorInstrucoesAntes, boolean podePorInstrucoesDepois){
+	public static void drawInstructionScratchWithBlocksBlock(Tessellator t,int color, int borderColor,int x,int y, int contentSgnatureWidth, int contentSignatureHeight, int contentBodyHeight, boolean podePorInstrucoesAntes, boolean podePorInstrucoesDepois){
 		VertexBuffer vb = t.getBuffer();
-		drawInstructionScratchBlock(t, x+GROSSURA_BORDA_INSTRUCAO_INTERNA, y, contentSgnatureWidth, contentSignatureHeight, podePorInstrucoesAntes, podePorInstrucoesDepois,false,GROSSURA_BORDA_INSTRUCAO_INTERNA);
-		GL11.glColor4f(0/255.0F, 153/255.0F, 182/255.0F, 1.0F);
+		drawInstructionScratchBlock(t,color,borderColor, x+GROSSURA_BORDA_INSTRUCAO_INTERNA, y, contentSgnatureWidth, contentSignatureHeight, podePorInstrucoesAntes, podePorInstrucoesDepois,false,GROSSURA_BORDA_INSTRUCAO_INTERNA);
 		int totalHeight = contentSignatureHeight + contentBodyHeight;
 		vb.begin(GL11.GL_QUAD_STRIP, DefaultVertexFormats.POSITION);
+		setColor(color);
 		
 		vb.pos((double)x, (double)y, 0.0D).endVertex();
 		vb.pos((double)x, (double)y+totalHeight, 0.0D).endVertex();
@@ -135,7 +141,19 @@ public class DrawHelper {
 		vb.pos((double)x+contentSgnatureWidth, (double)y+totalHeight-GROSSURA_BORDA_INSTRUCAO_INTERNA, 0.0D).endVertex();
 		vb.pos((double)x+contentSgnatureWidth, (double)y+totalHeight, 0.0D).endVertex();
 		
+		vb.pos((double)x+contentSgnatureWidth+FRUFRU_INST_BLOCK*2+1, (double)y+totalHeight-GROSSURA_BORDA_INSTRUCAO_INTERNA, 0.0D).endVertex();
+		vb.pos((double)x+contentSgnatureWidth, (double)y+totalHeight, 0.0D).endVertex();
+		
 		t.draw();
-		drawBottomConnector(t,x,y,totalHeight);
+		drawBottomConnector(t,color,x,y,totalHeight);
+		drawBorder(t, borderColor, x, y+totalHeight, contentSgnatureWidth);
+	}
+	private static void setColor(int color){
+		float f3 = (float)(color >> 24 & 255) / 255.0F;
+        float f = (float)(color >> 16 & 255) / 255.0F;
+        float f1 = (float)(color >> 8 & 255) / 255.0F;
+        float f2 = (float)(color & 255) / 255.0F;
+        
+		GL11.glColor4f(f, f1, f2, f3);
 	}
 }

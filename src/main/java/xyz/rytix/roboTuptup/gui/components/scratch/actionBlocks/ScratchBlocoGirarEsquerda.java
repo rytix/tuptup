@@ -9,6 +9,8 @@ public class ScratchBlocoGirarEsquerda extends ScratchBlocoAction{
 	private static final String texto = "Girar para Esquerda";
 	public ScratchBlocoGirarEsquerda(GuiBaseRoboTela gui, int left, int top, boolean exemplo) {
 		super(gui, left, top, texto, exemplo);
+		color = 0xFF467F6C;
+		borderColor = 0xFF2A4C41;
 	}
 
 	@Override

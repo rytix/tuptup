@@ -5,23 +5,21 @@ import xyz.rytix.roboTuptup.entity.TileEntityBaseRobo;
 import xyz.rytix.roboTuptup.gui.GuiBaseRoboTela;
 import xyz.rytix.roboTuptup.gui.components.scratch.core.ScratchBloco;
 
-public class ScratchBlocoColetarBlocoFrente extends ScratchBlocoAction{
-
-	public ScratchBlocoColetarBlocoFrente(GuiBaseRoboTela gui, int left, int top, boolean exemplo) {
-		super(gui, left, top, "Coletar Frente", exemplo);
-		color = 0xFF995BA5;
-		borderColor = 0xFF6A3F72;
+public class ScratchBlocoAndarBaixo extends ScratchBlocoAction{
+	private static final String texto = "Andar para Baixo";
+	public ScratchBlocoAndarBaixo(GuiBaseRoboTela gui, int left, int top, boolean exemplo) {
+		super(gui, left, top, texto, exemplo);
 	}
 
 	@Override
 	public ScratchBloco action(TileEntityBaseRobo base) {
-		base.harvestFrom(Move.FRONT);
+		base.moveRobot(Move.DOWN);
 		return super.action(base);
 	}
 
 	@Override
 	public ScratchBloco createNewScratchBlock() {
-		return new ScratchBlocoColetarBlocoFrente(gui, getLeft(), getTop(), false);
+		return new ScratchBlocoAndarBaixo(gui, getLeft(), getTop(), false);
 	}
 
 }

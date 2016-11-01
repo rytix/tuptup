@@ -27,7 +27,9 @@ public abstract class ScratchBlocoInstrucoesInternas extends ScratchBloco{
 	private int signatureHeight = 0;
 	private int bodyHeight = 0;
 	
-	private final int NO_BLOCK_BASE_HEIGHT = 9;
+	private final static int NO_BLOCK_BASE_HEIGHT = 9;
+	private final static int COLOR = 0xFF5BA55B;
+	private final static int BORDER_COLOR = 0xFF3F723F;
 	
 	public ScratchBlocoInstrucoesInternas(
 			GuiBaseRoboTela gui,
@@ -38,6 +40,8 @@ public abstract class ScratchBlocoInstrucoesInternas extends ScratchBloco{
 			boolean podePorBlocosDentroInstrucao,
 			boolean ehUmBlocoExemplo){
 		super(gui,left,top,blocosNaAssinaturaAceitaveis,podePorBlocosAntesInstrucao,podePorBlocosAposInstrucao,ehUmBlocoExemplo);
+		color = COLOR;
+		borderColor = BORDER_COLOR;
 		this.podePorBlocosDentroInstrucao = podePorBlocosDentroInstrucao;
 	}	
 		
@@ -52,7 +56,7 @@ public abstract class ScratchBlocoInstrucoesInternas extends ScratchBloco{
         GlStateManager.disableTexture2D();
         
 		//DrawHelper.drawInstructionScratchBlock(tessellator, left, top, getWidth(), getHeight(), podePorBlocosAntesInstrucao, podePorBlocosAposInstrucao);
-		DrawHelper.drawInstructionScratchWithBlocksBlock(tessellator, left, top, getWidth(), signatureHeight, bodyHeight, podePorBlocosAntesInstrucao, podePorBlocosAposInstrucao);
+		DrawHelper.drawInstructionScratchWithBlocksBlock(tessellator,COLOR,BORDER_COLOR, left, top, getWidth(), signatureHeight, bodyHeight, podePorBlocosAntesInstrucao, podePorBlocosAposInstrucao);
 		for(ScratchBloco bloco: blocosNaAssinatura){
 			bloco.draw(tessellator);
 		}

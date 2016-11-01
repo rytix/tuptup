@@ -76,16 +76,16 @@ public class ScrollPanelComponent extends Component implements RightClickDraggab
 		
 		int prevXScroll = xScroll + xScrollDiff;
 		int prevYScroll = yScroll + yScrollDiff;
-		if(prevXScroll > 0){
-			xScrollDiff = 0;
-		}else if(prevXScroll < -SCROLL_WIDTH + WIDTH){
-			xScrollDiff = 0;
-		}
-		if(prevYScroll > 0){
-			yScrollDiff = 0;
-		}else if(prevYScroll < -SCROLL_HEIGHT + HEIGHT){
-			yScrollDiff = 0;
-		}
+//		if(prevXScroll > 0){
+//			xScrollDiff = 0;
+//		}else if(prevXScroll < -SCROLL_WIDTH + WIDTH){
+//			xScrollDiff = 0;
+//		}
+//		if(prevYScroll > 0){
+//			yScrollDiff = 0;
+//		}else if(prevYScroll < -SCROLL_HEIGHT + HEIGHT){
+//			yScrollDiff = 0;
+//		}
 		
 		this.xScroll += xScrollDiff;
 		this.yScroll += yScrollDiff;
@@ -133,7 +133,7 @@ public class ScrollPanelComponent extends Component implements RightClickDraggab
 		VertexBuffer vertexbuffer = tessellator.getBuffer();
 		
         ativarGLScissors();
-		drawAreaBorders();
+		//drawAreaBorders();
 		removerLimite();
 		
         ativarGLScissors();

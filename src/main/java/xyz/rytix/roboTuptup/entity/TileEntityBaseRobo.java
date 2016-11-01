@@ -21,6 +21,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -57,6 +59,25 @@ public class TileEntityBaseRobo extends TileEntity implements ITickable, IInvent
 	
 	public void moveRobot(Move move){
 		roboPos = Initializer.BLOCK_ROBO.moveRobot(worldObj, roboPos, move);
+	}
+	
+	public boolean placeBlock(Move move){
+		int lenght = roboItemStack.length;
+		for(int i = 0; i < lenght; i++){
+			if(roboItemStack[i] != null){
+				Item item = roboItemStack[i].getItem();
+				if(item instanceof ItemBlock){
+					if(Initializer.BLOCK_ROBO.placeItemBlock(worldObj,(ItemBlock)item,roboPos,move)){
+						roboItemStack[i].stackSize--;
+						if(roboItemStack[i].stackSize <= 0){
+							removeStackFromSlot(i);
+						}
+					}
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	public void harvestFrom(Move move){

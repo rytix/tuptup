@@ -11,19 +11,34 @@ import xyz.rytix.roboTuptup.gui.components.scratch.actionBlocks.*;
 import xyz.rytix.roboTuptup.gui.components.scratch.controlBlocks.ScratchBlocoSempre;
 
 public class BlockFactory {
+	private static final int DIF = 20;
+	private static int difTemp = 0;
 	public static final List<ScratchBloco> createActionBlocks(GuiBaseRoboTela gui,int left, int top){
 		List<ScratchBloco> list = new ArrayList<ScratchBloco>();
 		top += 5;
 		left += 5;
-		int dif = 25;
-		list.add(new ScratchBlocoInicio(gui,left,top,true));
-		list.add(new ScratchBlocoAndarFrente(gui,left,top+dif,true));
-		list.add(new ScratchBlocoAndarTras(gui, left, top+dif*2, true));
-		list.add(new ScratchBlocoGirarEsquerda(gui, left, top+dif*3, true));
-		list.add(new ScratchBlocoGirarDireita(gui, left, top+dif*4, true));
-		list.add(new ScratchBlocoColetarBlocoFrente(gui, left, top+dif*5, true));
-		list.add(new ScratchBlocoSempre(gui, left, top+dif*6, true));
+		difTemp = 0;
+		add(list, new ScratchBlocoInicio(gui,left,top,true));
+		
+		add(list, new ScratchBlocoAndarFrente(gui,left,top,true));
+		add(list, new ScratchBlocoAndarTras(gui, left, top, true));
+		add(list, new ScratchBlocoAndarCima(gui, left, top, true));
+		add(list, new ScratchBlocoAndarBaixo(gui, left, top, true));
+		
+		add(list, new ScratchBlocoGirarEsquerda(gui, left, top, true));
+		add(list, new ScratchBlocoGirarDireita(gui, left, top, true));
+		
+		add(list, new ScratchBlocoColetarBlocoFrente(gui, left, top, true));
+		add(list, new ScratchBlocoColocarBlocoFrente(gui, left, top, true));
+		
+		add(list, new ScratchBlocoSempre(gui, left, top, true));
 		
 		return list;
+	}
+	private static void add(List<ScratchBloco> list, ScratchBloco bloco){
+		bloco.setTop(bloco.getTop()+difTemp);
+		difTemp+=DIF;
+		list.add(bloco);
+		
 	}
 }

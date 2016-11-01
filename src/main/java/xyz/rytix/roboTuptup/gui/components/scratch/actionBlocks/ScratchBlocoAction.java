@@ -21,9 +21,11 @@ import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
 public abstract class ScratchBlocoAction extends ScratchBloco{
-
+	
 	public ScratchBlocoAction(GuiBaseRoboTela gui, int left, int top, String texto, boolean exemplo) {
 		super(gui,left,top,new Class[]{ScratchBlocoString.class},true,true,exemplo);
+		color = 0xFF5BA58C;
+		borderColor = 0xFF3F7261;
 		addBlocoNaAssinatura(new ScratchBlocoString(this, gui, texto, left, top),0);
 	}
 	

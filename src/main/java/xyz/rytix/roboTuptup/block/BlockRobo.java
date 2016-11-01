@@ -72,6 +72,16 @@ public class BlockRobo extends Block implements ITileEntityProvider{
 		return item;
 	}
 	
+	public boolean placeItemBlock(World worldIn, ItemBlock itemBlock, BlockPos pos, Move move){
+		EnumFacing facing = (EnumFacing) worldIn.getBlockState(pos).getProperties().get(FACING);
+		TileEntityRobo entity = (TileEntityRobo) worldIn.getTileEntity(pos);
+		pos = getReferenceBlockPos(pos, move, facing);
+		if(worldIn.isAirBlock(pos)){
+			worldIn.setBlockState(pos, itemBlock.block.getDefaultState());
+			return true;
+		}		
+		return false;
+	}
 	private BlockPos getReferenceBlockPos(BlockPos origin, Move reference, EnumFacing facing){
 		switch(reference){
 		case UP:
@@ -232,7 +242,7 @@ public class BlockRobo extends Block implements ITileEntityProvider{
 				break;
 		
 		}
-		if(worldIn.isAirBlock(pos) || old == pos){
+		if((worldIn.isAirBlock(pos) || old == pos) && (pos.getY() < 256 && pos.getY() > 0)){
 			//TODO Find a Better way to do this logic.
 			BlockPos base = ((TileEntityRobo)worldIn.getTileEntity(old)).getBase();
 			worldIn.setBlockToAir(old);

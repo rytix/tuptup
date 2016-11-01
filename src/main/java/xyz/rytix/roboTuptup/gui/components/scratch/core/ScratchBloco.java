@@ -28,6 +28,9 @@ public abstract class ScratchBloco extends Component implements RightClickDragga
 	protected ScratchBloco[] blocosNaAssinatura; // Blocos que estão na assinatura
 	
 	protected ScratchBloco proximoBloco; // Caso aceite blocos após a instrução, este é o próximo bloco
+	
+	public int color;
+	public int borderColor;
 		
 	public ScratchBloco(GuiBaseRoboTela gui, int left, int top,
 			Class[] blocosNaAssinaturaAceitaveis,
@@ -35,6 +38,8 @@ public abstract class ScratchBloco extends Component implements RightClickDragga
 			boolean podePorBlocosAposInstrucao, 
 			boolean ehUmBlocoExemplo) {
 		super(gui,left,top);
+		this.color = 0xFFFFFFFF;
+		this.borderColor = 0xFFFFFFFF;
 		this.podePorBlocosAposInstrucao = podePorBlocosAposInstrucao;
 		this.podePorBlocosAntesInstrucao = podePorBlocosAntesInstrucao;
 		this.ehUmBlocoExemplo = ehUmBlocoExemplo;
@@ -56,7 +61,7 @@ public abstract class ScratchBloco extends Component implements RightClickDragga
 	    GlStateManager.pushAttrib();
         GlStateManager.disableTexture2D();
         
-		DrawHelper.drawInstructionScratchBlock(tessellator, left, top, getWidth(), getHeight(), podePorBlocosAntesInstrucao, podePorBlocosAposInstrucao);
+		DrawHelper.drawInstructionScratchBlock(tessellator,color,borderColor, left, top, getWidth(), getHeight(), podePorBlocosAntesInstrucao, podePorBlocosAposInstrucao);
 		
         GlStateManager.popAttrib();
         GlStateManager.popMatrix();	
