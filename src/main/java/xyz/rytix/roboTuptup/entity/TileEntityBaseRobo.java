@@ -126,6 +126,7 @@ public class TileEntityBaseRobo extends TileEntity implements ITickable, IInvent
 					packets.remove(packet);
 					for(ScratchBloco bloco: blocos){
 						if(bloco instanceof ScratchBlocoInicio){
+							moveRobot(Move.TELEPORT);
 							atualExecBloco = bloco;
 							break;
 						}
@@ -134,15 +135,6 @@ public class TileEntityBaseRobo extends TileEntity implements ITickable, IInvent
 				}
 			}
 
-			if(atualExecBloco == null){
-				moveRobot(Move.TELEPORT);
-				for(ScratchBloco bloco: blocos){
-					if(bloco instanceof ScratchBlocoInicio){
-						atualExecBloco = bloco;
-						break;
-					}
-				}
-			}
 			if(atualExecBloco != null){
 				atualExecBloco = atualExecBloco.action(this);
 		        worldObj.playEvent(null, 1008, roboPos, 0);

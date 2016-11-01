@@ -46,10 +46,10 @@ public class DrawHelper {
 		t.draw();
 	}
 	public static void drawInstructionScratchBlock(Tessellator t,int x,int y, int contentWidth, int contentHeight, boolean podePorInstrucoesAntes, boolean podePorInstrucoesDepois){
-		drawInstructionScratchBlock(t,x,y, contentWidth, contentHeight, podePorInstrucoesAntes, podePorInstrucoesDepois, true);
+		drawInstructionScratchBlock(t,x,y, contentWidth, contentHeight, podePorInstrucoesAntes, podePorInstrucoesDepois, true,0);
 	}
 
-	public static void drawInstructionScratchBlock(Tessellator t,int x,int y, int contentWidth, int contentHeight, boolean podePorInstrucoesAntes, boolean podePorInstrucoesDepois, boolean frufruLeft){
+	public static void drawInstructionScratchBlock(Tessellator t,int x,int y, int contentWidth, int contentHeight, boolean podePorInstrucoesAntes, boolean podePorInstrucoesDepois, boolean frufruLeft, int recuoLeftConnector){
 		int width = contentWidth + LEFT_RIGHT_SPACE_BLOCK;
 		contentHeight += TOP_BOTTOM_SPACE_BLOCK*2;
 		VertexBuffer vb = t.getBuffer();
@@ -72,7 +72,7 @@ public class DrawHelper {
 		}
 		
 		if(podePorInstrucoesAntes){
-			int x2 = LEFT_CONNECTOR + x;
+			int x2 = LEFT_CONNECTOR + x - recuoLeftConnector;
 			int y2 = y;
 			vb.pos((double)x2, (double)y, 0.0D).endVertex();
 			vb.pos((double)x2, (double)y+contentHeight, 0.0D).endVertex();
@@ -119,7 +119,7 @@ public class DrawHelper {
 	
 	public static void drawInstructionScratchWithBlocksBlock(Tessellator t,int x,int y, int contentSgnatureWidth, int contentSignatureHeight, int contentBodyHeight, boolean podePorInstrucoesAntes, boolean podePorInstrucoesDepois){
 		VertexBuffer vb = t.getBuffer();
-		drawInstructionScratchBlock(t, x+GROSSURA_BORDA_INSTRUCAO_INTERNA, y, contentSgnatureWidth, contentSignatureHeight, podePorInstrucoesAntes, podePorInstrucoesDepois,false);
+		drawInstructionScratchBlock(t, x+GROSSURA_BORDA_INSTRUCAO_INTERNA, y, contentSgnatureWidth, contentSignatureHeight, podePorInstrucoesAntes, podePorInstrucoesDepois,false,GROSSURA_BORDA_INSTRUCAO_INTERNA);
 		GL11.glColor4f(0/255.0F, 153/255.0F, 182/255.0F, 1.0F);
 		int totalHeight = contentSignatureHeight + contentBodyHeight;
 		vb.begin(GL11.GL_QUAD_STRIP, DefaultVertexFormats.POSITION);

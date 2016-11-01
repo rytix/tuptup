@@ -13,9 +13,13 @@ public class ScratchBlocoSempre extends ScratchBlocoInstrucoesInternas{
 	}
 
 	@Override
-	public ScratchBlocoInstrucoesInternas action(TileEntityBaseRobo base) {
-		// TODO Auto-generated method stub
-		return null;
+	public ScratchBloco action(TileEntityBaseRobo base) {
+		return proximoBlocoDentro;
+	}
+	
+	@Override
+	public ScratchBloco returnAction(TileEntityBaseRobo base) {
+		return proximoBlocoDentro;
 	}
 
 	@Override

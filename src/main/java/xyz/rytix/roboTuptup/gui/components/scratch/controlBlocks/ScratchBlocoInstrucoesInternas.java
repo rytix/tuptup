@@ -27,7 +27,7 @@ public abstract class ScratchBlocoInstrucoesInternas extends ScratchBloco{
 	private int signatureHeight = 0;
 	private int bodyHeight = 0;
 	
-	private final int NO_BLOCK_BASE_HEIGHT = 15;
+	private final int NO_BLOCK_BASE_HEIGHT = 9;
 	
 	public ScratchBlocoInstrucoesInternas(
 			GuiBaseRoboTela gui,
@@ -40,9 +40,7 @@ public abstract class ScratchBlocoInstrucoesInternas extends ScratchBloco{
 		super(gui,left,top,blocosNaAssinaturaAceitaveis,podePorBlocosAntesInstrucao,podePorBlocosAposInstrucao,ehUmBlocoExemplo);
 		this.podePorBlocosDentroInstrucao = podePorBlocosDentroInstrucao;
 	}	
-	
-	public abstract ScratchBlocoInstrucoesInternas action(TileEntityBaseRobo base);
-	
+		
 	@Override
 	public void draw(Tessellator tessellator) {
 		VertexBuffer vertexBuffer = tessellator.getBuffer();
@@ -82,7 +80,7 @@ public abstract class ScratchBlocoInstrucoesInternas extends ScratchBloco{
 	public void refreshAll(){
 		super.setWidthHeight();
 		signatureHeight = getHeight();
-		bodyHeight = proximoBlocoDentro != null ? proximoBlocoDentro.getTotalHeight() : 15;
+		bodyHeight = proximoBlocoDentro != null ? proximoBlocoDentro.getTotalHeight() + NO_BLOCK_BASE_HEIGHT : NO_BLOCK_BASE_HEIGHT;
 		setHeight(signatureHeight+bodyHeight);
 		
 		if(proximoBlocoDentro != null){
@@ -100,7 +98,7 @@ public abstract class ScratchBlocoInstrucoesInternas extends ScratchBloco{
 	}
 	
 	public boolean setProximoBlocoDentro(ScratchBloco proximoBlocoDentro) {
-		if(proximoBlocoDentro == null || this.proximoBloco == null){
+		if(proximoBlocoDentro == null || this.proximoBlocoDentro == null){
 			this.proximoBlocoDentro = proximoBlocoDentro;
 			this.proximoBlocoDentro.setPai(this);
 			refreshAll();
@@ -126,6 +124,19 @@ public abstract class ScratchBlocoInstrucoesInternas extends ScratchBloco{
 //		}
 //		return false;
 //	}
+	
+	@Override
+	public boolean removePaiVinculo(ScratchBloco bloco) {
+		if(super.removePaiVinculo(bloco)){
+			return true;
+		}
+		if(proximoBlocoDentro == bloco){
+			proximoBlocoDentro = null;
+			refreshAll();
+			return true;
+		}
+		return false;
+	}
 	
 	public boolean isPodePorBlocosDentroInstrucao() {
 		return podePorBlocosDentroInstrucao;

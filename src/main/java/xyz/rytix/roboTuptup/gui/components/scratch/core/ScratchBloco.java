@@ -185,16 +185,28 @@ public abstract class ScratchBloco extends Component implements RightClickDragga
 		//Bloco (Bloco para adicionar)
 		//This (Bloco que irá adicionar)
 		//TODO assinatura
-		//TODO interno
 		if(ehUmBlocoExemplo){
 			return false;
 		}
 		return setProximoBloco(bloco);
 	}
 	
-	public void removePaiVinculo(ScratchBloco bloco){
+	public boolean removePaiVinculo(ScratchBloco bloco){
+		int length = blocosNaAssinatura.length;
 		bloco.setPai(null);
-		bloco = null;
+		for(int i = 0; i < length; i++){
+			if(blocosNaAssinatura[i] == bloco){
+				blocosNaAssinatura[i] = null;
+				refreshAll();
+				return true;
+			}
+		}
+		if(proximoBloco == bloco){
+			proximoBloco = null;
+			refreshAll();
+			return true;
+		}
+		return false;
 	}
 	
 	public boolean addBlocoNaAssinatura(ScratchBloco bloco, int index){
