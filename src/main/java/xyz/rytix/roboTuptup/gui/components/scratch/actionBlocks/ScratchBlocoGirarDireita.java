@@ -24,5 +24,9 @@ public class ScratchBlocoGirarDireita extends ScratchBlocoAction{
 	public ScratchBloco createNewScratchBlock() {
 		return new ScratchBlocoGirarDireita(gui, getLeft(), getTop(), false);
 	}
+	@Override
+	public String toString() {
+		return "girarDireita()";
+	}
 
 }

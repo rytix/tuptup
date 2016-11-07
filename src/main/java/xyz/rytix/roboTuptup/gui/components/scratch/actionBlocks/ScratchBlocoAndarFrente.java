@@ -21,5 +21,8 @@ public class ScratchBlocoAndarFrente extends ScratchBlocoAction{
 	public ScratchBloco createNewScratchBlock() {
 		return new ScratchBlocoAndarFrente(gui, getLeft(), getTop(), false);
 	}
-
+	@Override
+	public String toString() {
+		return "andarFrente()";
+	}
 }

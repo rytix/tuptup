@@ -21,5 +21,9 @@ public class ScratchBlocoAndarBaixo extends ScratchBlocoAction{
 	public ScratchBloco createNewScratchBlock() {
 		return new ScratchBlocoAndarBaixo(gui, getLeft(), getTop(), false);
 	}
-
+	
+	@Override
+	public String toString() {
+		return "andarBaixo()";
+	}
 }

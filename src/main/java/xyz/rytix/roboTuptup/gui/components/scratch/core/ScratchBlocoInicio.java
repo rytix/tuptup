@@ -24,5 +24,9 @@ public class ScratchBlocoInicio extends ScratchBloco{
 	public ScratchBloco createNewScratchBlock() {
 		return new ScratchBlocoInicio(gui, getLeft(), getTop(),false);
 	}
+	@Override
+	public String toString() {
+		return "programa{ \n funcao inicio() {";
+	}
 
 }

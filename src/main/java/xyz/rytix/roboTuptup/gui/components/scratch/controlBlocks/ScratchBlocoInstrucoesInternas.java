@@ -43,7 +43,11 @@ public abstract class ScratchBlocoInstrucoesInternas extends ScratchBloco{
 		color = COLOR;
 		borderColor = BORDER_COLOR;
 		this.podePorBlocosDentroInstrucao = podePorBlocosDentroInstrucao;
-	}	
+	}
+	
+	public ScratchBloco getProximoDentro(){
+		return this.proximoBlocoDentro;
+	}
 		
 	@Override
 	public void draw(Tessellator tessellator) {
@@ -100,6 +104,7 @@ public abstract class ScratchBlocoInstrucoesInternas extends ScratchBloco{
 			((ScratchBloco)pai).refreshAll();
 		}
 	}
+	
 	
 	public boolean setProximoBlocoDentro(ScratchBloco proximoBlocoDentro) {
 		if(proximoBlocoDentro == null || this.proximoBlocoDentro == null){

@@ -41,4 +41,9 @@ public class ScratchBlocoRepita3 extends ScratchBlocoInstrucoesInternas{
 		return new ScratchBlocoRepita3(gui, getLeft(), getTop(), false);
 	}
 	
+	@Override
+	public String toString() {
+		return "para(inteiro i=0; i<3;i++){";
+	}
+	
 }

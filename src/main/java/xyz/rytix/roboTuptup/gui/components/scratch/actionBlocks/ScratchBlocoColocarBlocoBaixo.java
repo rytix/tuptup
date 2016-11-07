@@ -23,5 +23,8 @@ public class ScratchBlocoColocarBlocoBaixo extends ScratchBlocoAction{
 	public ScratchBloco createNewScratchBlock() {
 		return new ScratchBlocoColocarBlocoBaixo(gui, getLeft(), getTop(), false);
 	}
-
+	@Override
+	public String toString() {
+		return "colocarBaixo()";
+	}
 }

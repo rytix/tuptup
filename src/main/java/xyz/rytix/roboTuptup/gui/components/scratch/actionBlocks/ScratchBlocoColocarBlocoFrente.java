@@ -23,5 +23,8 @@ public class ScratchBlocoColocarBlocoFrente extends ScratchBlocoAction{
 	public ScratchBloco createNewScratchBlock() {
 		return new ScratchBlocoColocarBlocoFrente(gui, getLeft(), getTop(), false);
 	}
-
+	@Override
+	public String toString() {
+		return "colocarFrente()";
+	}
 }

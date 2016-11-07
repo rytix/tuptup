@@ -40,5 +40,8 @@ public class ScratchBlocoRepita2 extends ScratchBlocoInstrucoesInternas{
 	public ScratchBloco createNewScratchBlock() {
 		return new ScratchBlocoRepita2(gui, getLeft(), getTop(), false);
 	}
-	
+	@Override
+	public String toString() {
+		return "para(inteiro i=0; i<2;i++){";
+	}
 }

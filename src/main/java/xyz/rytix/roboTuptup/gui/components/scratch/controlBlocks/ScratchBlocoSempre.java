@@ -26,5 +26,8 @@ public class ScratchBlocoSempre extends ScratchBlocoInstrucoesInternas{
 	public ScratchBloco createNewScratchBlock() {
 		return new ScratchBlocoSempre(gui, getLeft(), getTop(), false);
 	}
-	
+	@Override
+	public String toString() {
+		return "enquanto(verdadeiro){";
+	}
 }

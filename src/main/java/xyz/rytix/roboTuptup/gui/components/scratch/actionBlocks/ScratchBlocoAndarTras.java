@@ -23,4 +23,9 @@ public class ScratchBlocoAndarTras extends ScratchBlocoAction{
 		return new ScratchBlocoAndarTras(gui, getLeft(), getTop(), false);
 	}
 	
+	@Override
+	public String toString() {
+		return "andarTras()";
+	}
+	
 }

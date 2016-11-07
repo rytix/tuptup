@@ -21,5 +21,10 @@ public class ScratchBlocoAndarCima extends ScratchBlocoAction{
 	public ScratchBloco createNewScratchBlock() {
 		return new ScratchBlocoAndarCima(gui, getLeft(), getTop(), false);
 	}
+	
+	@Override
+	public String toString() {
+		return "andarCima()";
+	}
 
 }

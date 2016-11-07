@@ -23,5 +23,8 @@ public class ScratchBlocoColetarBlocoBaixo extends ScratchBlocoAction{
 	public ScratchBloco createNewScratchBlock() {
 		return new ScratchBlocoColetarBlocoBaixo(gui, getLeft(), getTop(), false);
 	}
-
+	@Override
+	public String toString() {
+		return "coletarBaixo()";
+	}
 }

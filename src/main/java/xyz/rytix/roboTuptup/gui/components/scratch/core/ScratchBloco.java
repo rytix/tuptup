@@ -51,6 +51,10 @@ public abstract class ScratchBloco extends Component implements RightClickDragga
 		}
 	}	
 	
+	public ScratchBloco getProximo(){
+		return this.proximoBloco;
+	}
+	
 	@Override
 	public void draw(Tessellator tessellator) {
 		VertexBuffer vertexBuffer = tessellator.getBuffer();

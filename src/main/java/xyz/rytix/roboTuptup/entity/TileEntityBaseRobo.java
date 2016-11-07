@@ -4,12 +4,15 @@ import xyz.rytix.roboTuptup.Tuptup;
 import xyz.rytix.roboTuptup.block.BlockRobo;
 import xyz.rytix.roboTuptup.block.BlockRobo.Move;
 import xyz.rytix.roboTuptup.gui.TuptupGuiHandler;
+import xyz.rytix.roboTuptup.gui.components.scratch.controlBlocks.ScratchBlocoInstrucoesInternas;
 import xyz.rytix.roboTuptup.gui.components.scratch.core.ScratchBloco;
 import xyz.rytix.roboTuptup.gui.components.scratch.core.ScratchBlocoInicio;
 import xyz.rytix.roboTuptup.helper.Initializer;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.JOptionPane;
 
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -149,6 +152,30 @@ public class TileEntityBaseRobo extends TileEntity implements ITickable, IInvent
 						if(bloco instanceof ScratchBlocoInicio){
 							moveRobot(Move.TELEPORT);
 							atualExecBloco = bloco;
+							ScratchBloco aux = atualExecBloco;
+							ScratchBloco aux2 = atualExecBloco;
+							StringBuilder builder = new StringBuilder();
+							
+							while(aux!=null){
+								
+								builder.append(aux.toString());
+								builder.append("\n");
+								if(aux instanceof ScratchBlocoInstrucoesInternas){
+									aux2=((ScratchBlocoInstrucoesInternas)aux).getProximoDentro();
+									while(aux2!=null){
+										builder.append(aux2.toString());
+										builder.append("\n");
+										aux2=aux2.getProximo();
+									}
+									builder.append("}");
+									builder.append("\n");
+								}
+								aux = aux.getProximo();
+								
+							}
+							builder.append("} \n}");
+							System.out.println(builder.toString());
+							//JOptionPane.showMessageDialog(null, builder.toString());
 							break;
 						}
 					}
