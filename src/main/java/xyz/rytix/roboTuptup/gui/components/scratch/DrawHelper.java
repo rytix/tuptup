@@ -105,6 +105,18 @@ public class DrawHelper {
 			drawBottomConnector(t,color, x, y, contentHeight);
 		}
 		drawBorder(t, borderColor, x, y+contentHeight, contentWidth);
+		
+	}
+	
+	private static void drawBorder(Tessellator t, int borderColor, int left, int top, int width, int contentHeight){
+		VertexBuffer vb = t.getBuffer();
+		
+		setColor(borderColor);
+		vb.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION);
+		vb.pos((double)left+8, (double)top+width, 0.0D).endVertex();
+		vb.pos((double)left+4, (double)top+width, 0.0D).endVertex();
+		vb.pos((double)left+4, (double)top+contentHeight-4, 0.0D).endVertex();
+		t.draw();
 	}
 	
 	private static void drawBorder(Tessellator t, int borderColor, int left, int top, int width){
@@ -147,6 +159,7 @@ public class DrawHelper {
 		t.draw();
 		drawBottomConnector(t,color,x,y,totalHeight);
 		drawBorder(t, borderColor, x, y+totalHeight, contentSgnatureWidth);
+		drawBorder(t, borderColor, x, y, contentSignatureHeight, totalHeight);
 	}
 	private static void setColor(int color){
 		float f3 = (float)(color >> 24 & 255) / 255.0F;
