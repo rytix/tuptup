@@ -309,4 +309,7 @@ public abstract class ScratchBloco extends Component implements RightClickDragga
 		}
 		super.setGui(gui);
 	}
+	public boolean isEhUmBlocoExemplo() {
+		return ehUmBlocoExemplo;
+	}
 }

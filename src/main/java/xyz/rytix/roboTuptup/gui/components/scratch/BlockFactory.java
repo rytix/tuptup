@@ -8,6 +8,10 @@ import xyz.rytix.roboTuptup.gui.components.scratch.core.ScratchBloco;
 import xyz.rytix.roboTuptup.gui.components.scratch.core.ScratchBlocoInicio;
 import xyz.rytix.roboTuptup.gui.GuiBaseRoboTela;
 import xyz.rytix.roboTuptup.gui.components.scratch.actionBlocks.*;
+import xyz.rytix.roboTuptup.gui.components.scratch.controlBlocks.ScratchBlocoInstrucoesInternas;
+import xyz.rytix.roboTuptup.gui.components.scratch.controlBlocks.ScratchBlocoRepita2;
+import xyz.rytix.roboTuptup.gui.components.scratch.controlBlocks.ScratchBlocoRepita3;
+import xyz.rytix.roboTuptup.gui.components.scratch.controlBlocks.ScratchBlocoRepita5;
 import xyz.rytix.roboTuptup.gui.components.scratch.controlBlocks.ScratchBlocoSempre;
 
 public class BlockFactory {
@@ -29,15 +33,24 @@ public class BlockFactory {
 		add(list, new ScratchBlocoGirarDireita(gui, left, top, true));
 		
 		add(list, new ScratchBlocoColetarBlocoFrente(gui, left, top, true));
+		add(list, new ScratchBlocoColetarBlocoBaixo(gui, left, top, true));
 		add(list, new ScratchBlocoColocarBlocoFrente(gui, left, top, true));
+		add(list, new ScratchBlocoColocarBlocoBaixo(gui, left, top, true));
 		
 		add(list, new ScratchBlocoSempre(gui, left, top, true));
+		add(list, new ScratchBlocoRepita2(gui, left, top, true));
+		add(list, new ScratchBlocoRepita3(gui, left, top, true));
+		add(list, new ScratchBlocoRepita5(gui, left, top, true));
 		
 		return list;
 	}
 	private static void add(List<ScratchBloco> list, ScratchBloco bloco){
 		bloco.setTop(bloco.getTop()+difTemp);
-		difTemp+=DIF;
+		if(bloco instanceof ScratchBlocoInstrucoesInternas){
+			difTemp+=DIF*2-10;
+		}else{
+			difTemp+=DIF;
+		}
 		list.add(bloco);
 		
 	}

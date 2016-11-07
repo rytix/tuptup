@@ -138,7 +138,7 @@ public class TileEntityBaseRobo extends TileEntity implements ITickable, IInvent
 	///ITickable Interface
 	@Override
 	public void update() {	
-		if(System.currentTimeMillis() > milis + 350 && !worldObj.isRemote){//&& atualExecBloco != null){
+		if(System.currentTimeMillis() > milis + 50 && !worldObj.isRemote){//&& atualExecBloco != null){
 			BlockPos pos = this.getPos();
 			for(PseudoPacket packet:packets){
 				if(packet.x == pos.getX() && packet.y == pos.getY() && packet.z == pos.getZ()){
