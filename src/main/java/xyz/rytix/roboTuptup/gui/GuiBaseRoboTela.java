@@ -16,11 +16,11 @@ import xyz.rytix.roboTuptup.Tuptup;
 import xyz.rytix.roboTuptup.entity.TileEntityBaseRobo;
 import xyz.rytix.roboTuptup.gui.components.scratch.actionBlocks.ScratchBlocoAction;
 import xyz.rytix.roboTuptup.gui.components.scratch.core.ScratchBloco;
+import xyz.rytix.roboTuptup.gui.dragAndDrop.DragAndDropController;
 import xyz.rytix.roboTuptup.gui.components.Component;
 import xyz.rytix.roboTuptup.gui.components.ScrollPanelComponent;
 import xyz.rytix.roboTuptup.gui.components.ScrollPanelComponentLeft;
 import xyz.rytix.roboTuptup.gui.interfaces.IComponent;
-import xyz.rytix.roboTuptup.gui.interfaces.RightClickDraggable;
 import xyz.rytix.roboTuptup.helper.TheObliteratorCustomFont;
 
 import net.java.games.input.Keyboard;
@@ -38,16 +38,17 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.GuiScrollingList;
 
 public class GuiBaseRoboTela extends GuiContainer {
-
-	public static RightClickDraggable holdObject = null;
 	
 	List<IComponent> components;
 	TileEntityBaseRobo baseRoboEntity;
-
+	DragAndDropController dragAndDropController;
+	
 	public GuiBaseRoboTela(IInventory playerInv,
 			TileEntityBaseRobo baseRoboEntity) {
 		super(new ContainerBaseRobo(playerInv, baseRoboEntity));
-				
+		
+		this.dragAndDropController = new DragAndDropController();
+		
 		this.xSize = 256;
 		this.ySize = 242;
 		this.baseRoboEntity = baseRoboEntity;
@@ -91,10 +92,7 @@ public class GuiBaseRoboTela extends GuiContainer {
 	}
 	@Override
 	protected void mouseReleased(int mouseX, int mouseY, int state) {
-		if(holdObject != null){
-			holdObject.draggablePos(mouseX, mouseY);
-			holdObject = null;
-		}
+		dragAndDropController.mouseReleased(mouseX, mouseY, state);
 		super.mouseReleased(mouseX, mouseY, state);
 	}
 	
