@@ -1,5 +1,15 @@
 package xyz.rytix.roboTuptup.gui.interfaces;
 
+@Deprecated
+/**
+ * Esta interface será removida e substituida pela IDraggable.
+ * 
+ * Outra interface para areas que podem receber IDraggables foi criada chamada
+ * de IDroppable. 
+ * 
+ * @author Paulo
+ *
+ */
 public interface RightClickDraggable extends IComponent{
 	/**
 	 * Função que será chamada uma vez antes de entrar no loop de chamar a função
@@ -22,5 +32,9 @@ public interface RightClickDraggable extends IComponent{
 	 */
 	public void draggablePos(int mouseX, int mouseY);
 	
+	@Deprecated
+	/**
+	 * A atribuição de capturar os objetos internos será dada ao IComponent
+	 */
 	public RightClickDraggable getDraggableObject(int mouseX, int mouseY);
 }

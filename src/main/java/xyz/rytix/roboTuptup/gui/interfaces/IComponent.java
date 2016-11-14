@@ -16,7 +16,10 @@ public interface IComponent {
 	public void setLeft(int left);
 	public int getTop();
 	public void setTop(int top);
+	
 	public int getWidth();
 	public int getHeight();
 	public void setGui(GuiBaseRoboTela gui);
+	
+	//TODO getAllComponentsInside : List<IComponent>
 }
