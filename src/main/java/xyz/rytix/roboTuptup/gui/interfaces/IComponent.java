@@ -99,8 +99,4 @@ public interface IComponent {
 	 * @return null se não possuir um pai, ou o componente em que este está adicionado.
 	 */
 	public IComponent getPai();
-	/**
-	 * @param pai componente que adicionou este componente
-	 */
-	public void setPai(IComponent pai);
 }

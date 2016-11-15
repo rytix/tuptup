@@ -83,9 +83,5 @@ public abstract class Component implements IComponent{
 	public void setTop(int top) {
 		this.top = top;
 	}
-	@Override
-	public void setGui(GuiBaseRoboTela gui) {
-		this.gui = gui;
-	}
 	
 }
