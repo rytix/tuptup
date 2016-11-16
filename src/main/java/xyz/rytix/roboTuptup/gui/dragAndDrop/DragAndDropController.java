@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.lwjgl.input.Mouse;
 
+import net.minecraft.client.renderer.Tessellator;
 import xyz.rytix.roboTuptup.gui.dragAndDrop.interfaces.IDraggable;
 import xyz.rytix.roboTuptup.gui.dragAndDrop.interfaces.IDroppable;
 import xyz.rytix.roboTuptup.gui.interfaces.IComponent;
@@ -34,11 +35,43 @@ public class DragAndDropController {
 	
 	public void mouseReleased(int mouseX, int mouseY, int state){
 		if(holdedDraggable != null){
+			lastDroppableFloated.draggableDropped(holdedDraggable);
 			holdedDraggable.draggablePos(mouseX, mouseY);
 			holdedDraggable = null;
 		}
 	}
 	
+	public void mouseClickMove(int mouseX, int mouseY){
+		if(holdedDraggable == null && mainWindowComponent.isMouseInside(mouseX, mouseY)){
+			IDraggable iDraggableFinded = findInnerValidIDraggable(mainWindowComponent, mouseX, mouseY);
+			if(iDraggableFinded != null){
+				holdedDraggable = iDraggableFinded;
+				holdedDraggable.draggablePre(mouseX, mouseY);
+				holdedDraggable.getPai().removeComponent(holdedDraggable);
+			}
+		}else if(holdedDraggable != null){
+			IDroppable iDroppableFinded;
+			holdedDraggable.dragging(mouseX, mouseY);
+			
+			iDroppableFinded = findInnerValidIDroppable(mainWindowComponent, holdedDraggable, mouseX, mouseY);
+			if(iDroppableFinded != lastDroppableFloated){
+				if(lastDroppableFloated != null){
+					lastDroppableFloated.draggableHoverOut(holdedDraggable);
+				}
+				lastDroppableFloated = iDroppableFinded;
+				
+				if(iDroppableFinded != null){
+					iDroppableFinded.draggableHoverIn(holdedDraggable);
+				}
+			}
+		}
+	}
+	
+	public void drawHoldedDraggable(Tessellator t){
+		if(holdedDraggable != null)
+			holdedDraggable.draw(t);
+	}
+
 	private IComponent findTheInnerComponentWhereTheMouseIsOn(IComponent start, int mouseX, int mouseY){		
 		List<IComponent> innerComponents;
 		mainLoop:
@@ -95,31 +128,5 @@ public class DragAndDropController {
 	}
 	private IDroppable findInnerValidIDroppable (IComponent start, IDraggable draggableOnHold, int mouseX, int mouseY){
 		return returnUntilFindAIDroppableOrNull(findTheInnerComponentThatThisDraggableIsHovering(start, draggableOnHold, mouseX, mouseY));
-	}
-	
-	public void mouseClickMove(int mouseX, int mouseY){
-		if(holdedDraggable == null && mainWindowComponent.isMouseInside(mouseX, mouseY)){
-			IDraggable iDraggableFinded = findInnerValidIDraggable(mainWindowComponent, mouseX, mouseY);
-			if(iDraggableFinded != null){
-				holdedDraggable = iDraggableFinded;
-				holdedDraggable.draggablePre(mouseX, mouseY);
-				holdedDraggable.getPai().removeComponent(holdedDraggable);
-			}
-		}else if(holdedDraggable != null){
-			IDroppable iDroppableFinded;
-			holdedDraggable.dragging(mouseX, mouseY);
-			
-			iDroppableFinded = findInnerValidIDroppable(mainWindowComponent, holdedDraggable, mouseX, mouseY);
-			if(iDroppableFinded != lastDroppableFloated){
-				if(lastDroppableFloated != null){
-					lastDroppableFloated.draggableHoverOut(holdedDraggable);
-				}
-				lastDroppableFloated = iDroppableFinded;
-				
-				if(iDroppableFinded != null){
-					iDroppableFinded.draggableHoverIn(holdedDraggable);
-				}
-			}
-		}
-	}
+	}	
 }

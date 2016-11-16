@@ -47,7 +47,7 @@ public class GuiBaseRoboTela extends GuiContainer {
 			TileEntityBaseRobo baseRoboEntity) {
 		super(new ContainerBaseRobo(playerInv, baseRoboEntity));
 		
-		this.dragAndDropController = new DragAndDropController();
+		this.dragAndDropController = new DragAndDropController(null); //TODO place the correct
 		
 		this.xSize = 256;
 		this.ySize = 242;
@@ -98,29 +98,12 @@ public class GuiBaseRoboTela extends GuiContainer {
 	
 	@Override
 	protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
-		if(Mouse.isButtonDown(0) && holdObject == null){
-			IComponent component = getComponentOn(mouseX, mouseY);
-			if(component instanceof RightClickDraggable){
-				holdObject = ((RightClickDraggable)component).getDraggableObject(mouseX, mouseY);
-				holdObject.draggablePre(mouseX, mouseY);
-				getPanelOn(mouseX, mouseY).components.remove(holdObject); // XXX
-			}
-			
-		}else if(holdObject != null){
-			holdObject.draggableAction(mouseX, mouseY);
+		if(Mouse.isButtonDown(0)){
+			dragAndDropController.mouseClickMove(mouseX, mouseY);
 		}
-		
 		super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
 	}
 	
-	public IComponent getComponentOn(int mouseX, int mouseY){
-		for(IComponent component: components){
-			if(component.isMouseInside(mouseX, mouseY)){
-				return component.getComponentOn(mouseX, mouseY);
-			}
-		}
-		return null;
-	}
 	public ScrollPanelComponent getPanelOn(int mouseX, int mouseY){
 		for(IComponent component: components){
 			if(component instanceof ScrollPanelComponent && component.isMouseInside(mouseX, mouseY)){
@@ -135,9 +118,7 @@ public class GuiBaseRoboTela extends GuiContainer {
 		for(IComponent component: components){
 	        component.draw(tessellator);
 		}
-		if(holdObject != null){
-			holdObject.draw(tessellator);
-		}
+		dragAndDropController.drawHoldedDraggable(tessellator);
 	}
 	
 	
